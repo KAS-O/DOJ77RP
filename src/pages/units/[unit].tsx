@@ -41,7 +41,6 @@ type UnitMember = {
   login: string;
   fullName: string;
   role: Role;
-  badgeNumber?: string;
   department: Department | null;
   units: InternalUnit[];
   additionalRanks: AdditionalRank[];
@@ -201,9 +200,6 @@ function MemberRow({ member, unit, manageableRanks, membershipRank, onSubmit, sa
         <div>
           <div className="text-base font-semibold text-white/90">
             {member.fullName}
-            {member.badgeNumber ? (
-              <span className="ml-2 text-xs font-mono text-white/50">#{member.badgeNumber}</span>
-            ) : null}
           </div>
           <div className="text-xs text-white/60">
             {member.login} • {ROLE_LABELS[member.role] || member.role}
@@ -307,7 +303,7 @@ export default function UnitPanelPage() {
   const unitSlug = Array.isArray(router.query.unit) ? router.query.unit[0] : router.query.unit;
   const normalizedUnit = (unitSlug ? unitSlug.toLowerCase() : "") as InternalUnit;
   const section: UnitSectionConfig | null = unitSlug ? getUnitSection(normalizedUnit) : null;
-  const { role, additionalRanks, ready } = useProfile();
+  const { role, additionalRanks, ready, adminPrivileges } = useProfile();
   const { confirm, alert } = useDialog();
   const permission = useMemo(
     () => (section ? resolveUnitPermission(section.unit, additionalRanks) : null),
@@ -359,7 +355,7 @@ export default function UnitPanelPage() {
     if (permission) {
       return permission;
     }
-    if (!section || !isHighCommand(role)) {
+    if (!section || (!adminPrivileges && !isHighCommand(role))) {
       return null;
     }
     if (section.rankHierarchy.length === 0) {
@@ -378,7 +374,7 @@ export default function UnitPanelPage() {
       highestRank,
       manageableRanks,
     };
-  }, [permission, role, section]);
+  }, [adminPrivileges, permission, role, section]);
 
   const canManage = !!managementPermission;
 
@@ -513,7 +509,6 @@ export default function UnitPanelPage() {
     return unitMembers.filter((member) => {
       if (member.fullName.toLowerCase().includes(q)) return true;
       if (member.login.toLowerCase().includes(q)) return true;
-      if (member.badgeNumber && member.badgeNumber.toLowerCase().includes(q)) return true;
       const departmentLabel = getDepartmentOption(member.department)?.abbreviation?.toLowerCase();
       if (departmentLabel && departmentLabel.includes(q)) return true;
       const unitLabels = member.units
@@ -556,7 +551,6 @@ export default function UnitPanelPage() {
     return candidateMembers.filter((member) => {
       if (member.fullName.toLowerCase().includes(q)) return true;
       if (member.login.toLowerCase().includes(q)) return true;
-      if (member.badgeNumber && member.badgeNumber.toLowerCase().includes(q)) return true;
       return false;
     });
   }, [candidateMembers, candidateSearch]);
@@ -944,9 +938,6 @@ export default function UnitPanelPage() {
                             <li key={member.uid} className="rounded-xl border border-white/10 bg-white/5 px-3 py-2">
                               <div className="flex items-center justify-between gap-3">
                                 <span className="font-semibold text-white">{member.fullName}</span>
-                                {member.badgeNumber && (
-                                  <span className="text-xs font-mono text-white/50">#{member.badgeNumber}</span>
-                                )}
                               </div>
                               <div className="text-xs text-white/60">
                                 {member.login} • {ROLE_LABELS[member.role] || member.role}
@@ -1245,7 +1236,7 @@ export default function UnitPanelPage() {
                       <span className="font-semibold text-white">Wybierz funkcjonariusza</span>
                       <input
                         className="input"
-                        placeholder="Szukaj po imieniu, loginie lub numerze odznaki"
+                        placeholder="Szukaj po imieniu lub loginie"
                         value={candidateSearch}
                         onChange={(e) => setCandidateSearch(e.target.value)}
                       />
@@ -1276,7 +1267,6 @@ export default function UnitPanelPage() {
                                 <span className="font-semibold text-white">{candidate.fullName}</span>
                                 <span className="text-xs text-white/60">
                                   {candidate.login}
-                                  {candidate.badgeNumber ? ` • #${candidate.badgeNumber}` : ""}
                                 </span>
                               </div>
                             </label>

@@ -32,15 +32,7 @@ import { deriveLoginFromEmail } from "@/lib/login";
 import { auth, db } from "@/lib/firebase";
 import { useDialog } from "@/components/DialogProvider";
 import { useAnnouncement } from "@/hooks/useAnnouncement";
-import {
-  ROLE_LABELS,
-  ROLE_OPTIONS,
-  ROLE_VALUES,
-  hasBoardAccess,
-  DEFAULT_ROLE,
-  normalizeRole,
-  canAssignAdminPrivileges,
-} from "@/lib/roles";
+import { ROLE_LABELS, ROLE_OPTIONS, ROLE_VALUES, DEFAULT_ROLE, normalizeRole, canAssignAdminPrivileges } from "@/lib/roles";
 import {
   DEPARTMENTS,
   INTERNAL_UNITS,
@@ -70,7 +62,6 @@ type Account = {
   role: Role;
   email: string;
   createdAt?: string;
-  badgeNumber?: string;
   department?: Department | null;
   units: InternalUnit[];
   additionalRanks: AdditionalRank[];
@@ -85,7 +76,6 @@ type TicketRecord = {
   authorUid: string | null;
   authorName: string;
   authorLogin: string;
-  authorBadgeNumber?: string | null;
   authorRoleLabel?: string | null;
   authorRoleGroup?: string | null;
   authorUnits: InternalUnit[];
@@ -98,8 +88,6 @@ type TicketRecord = {
 type TicketActionStatus = "archiving" | "deleting";
 
 const LOGIN_PATTERN = /^[a-z0-9._-]+$/;
-const BADGE_PATTERN = /^[0-9]{1,6}$/;
-
 const ANNOUNCEMENT_WINDOWS: { value: string; label: string; ms: number | null }[] = [
   { value: "30m", label: "30 minut", ms: 30 * 60 * 1000 },
   { value: "1h", label: "1 godzina", ms: 60 * 60 * 1000 },
@@ -134,13 +122,6 @@ const shouldFallbackToClient = (status: number, message?: string | null) => {
 };
 
 const LOG_PAGE_SIZE = 150;
-
-const ROLE_RANK = new Map<Role, number>(ROLE_VALUES.map((value, index) => [value, index]));
-
-const getRoleRank = (value: Role | null | undefined): number => {
-  if (!value) return -1;
-  return ROLE_RANK.get(value) ?? -1;
-};
 
 const CHIP_CLASS =
   "inline-flex items-center gap-1 rounded-full border px-3 py-1 text-xs font-semibold tracking-wide shadow-sm";
@@ -333,10 +314,8 @@ async function readErrorResponse(res: Response, fallback: string) {
 
 export default function Admin() {
   const { role, login, fullName, adminPrivileges, ready } = useProfile();
-  const hasAdminAccess = adminPrivileges || hasBoardAccess(role);
+  const hasAdminAccess = adminPrivileges;
   const canToggleAdmin = canAssignAdminPrivileges(role);
-  const requesterRoleRank = getRoleRank(role);
-  const canManageAllRoles = role === "admin";
   const { writeLog } = useLogWriter();
   const { confirm, prompt, alert } = useDialog();
   const { announcement } = useAnnouncement();
@@ -382,13 +361,7 @@ export default function Admin() {
     initialRole: Role;
   } | null>(null);
   const [accountSaving, setAccountSaving] = useState(false);
-  const roleChangeLocked = useMemo(
-    () =>
-      !editorState || canManageAllRoles
-        ? false
-        : editorState.mode === "edit" && getRoleRank(editorState.initialRole) > requesterRoleRank,
-    [editorState, canManageAllRoles, requesterRoleRank]
-  );
+  const roleChangeLocked = false;
 
   // ogłoszenia
   const [announcementMessage, setAnnouncementMessage] = useState("");
@@ -476,7 +449,6 @@ export default function Admin() {
             authorFullName ||
             authorLogin ||
             (typeof data?.authorUid === "string" ? data.authorUid : "Nieznany funkcjonariusz");
-          const badgeNumber = typeof data?.authorBadgeNumber === "string" ? data.authorBadgeNumber.trim() : null;
           const roleLabel = typeof data?.authorRoleLabel === "string" ? data.authorRoleLabel.trim() : null;
           const roleGroup = typeof data?.authorRoleGroup === "string" ? data.authorRoleGroup.trim() : null;
           const message = typeof data?.message === "string" ? data.message.trim() : "";
@@ -488,7 +460,6 @@ export default function Admin() {
             authorUid: typeof data?.authorUid === "string" ? data.authorUid : null,
             authorName,
             authorLogin,
-            authorBadgeNumber: badgeNumber,
             authorRoleLabel: roleLabel,
             authorRoleGroup: roleGroup,
             authorUnits,
@@ -534,7 +505,6 @@ export default function Admin() {
             authorFullName ||
             authorLogin ||
             (typeof data?.authorUid === "string" ? data.authorUid : "Nieznany funkcjonariusz");
-          const badgeNumber = typeof data?.authorBadgeNumber === "string" ? data.authorBadgeNumber.trim() : null;
           const roleLabel = typeof data?.authorRoleLabel === "string" ? data.authorRoleLabel.trim() : null;
           const roleGroup = typeof data?.authorRoleGroup === "string" ? data.authorRoleGroup.trim() : null;
           const message = typeof data?.message === "string" ? data.message.trim() : "";
@@ -548,7 +518,6 @@ export default function Admin() {
             authorUid: typeof data?.authorUid === "string" ? data.authorUid : null,
             authorName,
             authorLogin,
-            authorBadgeNumber: badgeNumber,
             authorRoleLabel: roleLabel,
             authorRoleGroup: roleGroup,
             authorUnits,
@@ -872,12 +841,6 @@ export default function Admin() {
         } else if (typeof createdAtRaw === "string") {
           createdAt = createdAtRaw;
         }
-      const badgeNumberValue =
-        typeof data?.badgeNumber === "string"
-          ? data.badgeNumber.trim()
-          : typeof data?.badgeNumber === "number"
-          ? String(data.badgeNumber)
-          : "";
       const departmentValue = normalizeDepartment(data?.department);
       const unitsValue = normalizeInternalUnits(data?.units);
       const additionalRanksValue = normalizeAdditionalRanks(data?.additionalRanks ?? data?.additionalRank);
@@ -887,7 +850,6 @@ export default function Admin() {
         fullName: typeof data?.fullName === "string" ? data.fullName : "",
         role: normalizeRole(data?.role),
         email: login ? `${login}@${domain}` : "",
-        ...(badgeNumberValue ? { badgeNumber: badgeNumberValue } : {}),
         ...(createdAt ? { createdAt } : {}),
         department: departmentValue,
         units: unitsValue,
@@ -914,7 +876,6 @@ export default function Admin() {
         fullName: "",
         role: DEFAULT_ROLE,
         email: "",
-        badgeNumber: "",
         department: DEPARTMENTS[0]?.value ?? null,
         units: [],
         additionalRanks: [],
@@ -952,28 +913,11 @@ export default function Admin() {
     const fullNameValue = (editorState.account.fullName || "").trim();
     const roleValue: Role = editorState.account.role || DEFAULT_ROLE;
     const passwordValue = (editorState.password || "").trim();
-    const badgeNumberValue = (editorState.account.badgeNumber || "").trim();
     const departmentValue = normalizeDepartment(editorState.account.department);
     const unitsValue = Array.isArray(editorState.account.units)
       ? editorState.account.units.filter((unit): unit is InternalUnit => !!getInternalUnitOption(unit))
       : [];
     const additionalRanksValue = normalizeAdditionalRanks(editorState.account.additionalRanks);
-    const originalRoleValue: Role = editorState.initialRole || DEFAULT_ROLE;
-
-    if (!canManageAllRoles) {
-      if (
-        editorState.mode === "edit" &&
-        getRoleRank(originalRoleValue) > requesterRoleRank &&
-        roleValue !== originalRoleValue
-      ) {
-        setErr("Nie możesz zmienić rangi funkcjonariusza z wyższą rangą.");
-        return;
-      }
-      if (getRoleRank(roleValue) > requesterRoleRank) {
-        setErr("Nie możesz nadać rangi wyższej niż Twoja.");
-        return;
-      }
-    }
 
     if (!loginValue) {
       setErr("Login jest wymagany.");
@@ -993,14 +937,6 @@ export default function Admin() {
         setErr("Zmiana hasła jest niedostępna z poziomu panelu. Użyj resetu hasła w Firebase.");
         return;
       }
-    }
-    if (!badgeNumberValue) {
-      setErr("Numer odznaki jest wymagany.");
-      return;
-    }
-    if (!BADGE_PATTERN.test(badgeNumberValue)) {
-      setErr("Numer odznaki powinien zawierać od 1 do 6 cyfr.");
-      return;
     }
     if (editorState.mode === "create" && !passwordValue) {
       setErr("Hasło jest wymagane przy tworzeniu nowego konta.");
@@ -1040,7 +976,6 @@ export default function Admin() {
               fullName: fullNameValue,
               role: roleValue,
               password: passwordValue,
-              badgeNumber: badgeNumberValue,
               department: departmentValue,
               units: unitsValue,
               additionalRanks: additionalRanksValue,
@@ -1051,7 +986,6 @@ export default function Admin() {
               uid: editorState.account.uid,
               fullName: fullNameValue,
               role: roleValue,
-              badgeNumber: badgeNumberValue,
               department: departmentValue,
               units: unitsValue,
               additionalRanks: additionalRanksValue,
@@ -1188,7 +1122,6 @@ export default function Admin() {
       .filter((acc) => {
         if (!phrase) return true;
         const fullName = (acc.fullName || "").toLowerCase();
-        const badge = (acc.badgeNumber || "").toLowerCase();
         const departmentLabel = (getDepartmentOption(acc.department)?.abbreviation || "").toLowerCase();
         const unitLabels = acc.units
           .map((unit) => getInternalUnitOption(unit)?.abbreviation || "")
@@ -1204,7 +1137,6 @@ export default function Admin() {
         return (
           acc.login.toLowerCase().includes(phrase) ||
           fullName.includes(phrase) ||
-          (badge ? badge.includes(phrase) : false) ||
           (departmentLabel ? departmentLabel.includes(phrase) : false) ||
           unitLabels.some((label) => label.includes(phrase)) ||
           additionalRankLabels.some((label) => label.includes(phrase))
@@ -2072,7 +2004,7 @@ export default function Admin() {
                   <div className="mt-4 flex flex-wrap items-center gap-3">
                     <input
                       className="input w-full md:w-72 bg-white text-black placeholder:text-slate-500"
-                      placeholder="Szukaj po loginie, imieniu lub numerze odznaki..."
+                      placeholder="Szukaj po loginie, imieniu lub przypisaniach..."
                       value={accountSearch}
                       onChange={(e) => setAccountSearch(e.target.value)}
                     />
@@ -2134,11 +2066,6 @@ export default function Admin() {
                             <p className="text-sm text-beige-700">
                               Login: <span className="font-mono text-base">{acc.login}@{loginDomain}</span>
                             </p>
-                            {acc.badgeNumber && (
-                              <p className="text-sm text-beige-700">
-                                Numer odznaki: <span className="font-semibold">{acc.badgeNumber}</span>
-                              </p>
-                            )}
                             <p className="text-xs uppercase tracking-wide text-beige-600 mt-1">
                               Ranga: {ROLE_LABELS[acc.role] || acc.role}
                             </p>
@@ -2367,7 +2294,6 @@ export default function Admin() {
                               <div className="text-lg font-semibold text-white">{ticket.authorName}</div>
                               <div className="text-xs text-white/70">
                                 {ticket.authorLogin || "—"}
-                                {ticket.authorBadgeNumber ? ` • #${ticket.authorBadgeNumber}` : ""}
                               </div>
                               <div className="text-xs text-white/60">
                                 {ticket.authorRoleLabel || "Brak stopnia"}
@@ -2734,21 +2660,6 @@ export default function Admin() {
               </div>
 
               <div>
-                <label className="text-sm font-semibold text-white/80">Numer odznaki</label>
-                <input
-                  className="input bg-white text-black placeholder:text-slate-500"
-                  value={editorState.account.badgeNumber || ""}
-                  placeholder="np. 1234"
-                  onChange={(e) =>
-                    setEditorState((prev) =>
-                      prev ? { ...prev, account: { ...prev.account, badgeNumber: e.target.value } } : prev
-                    )
-                  }
-                />
-                <p className="mt-1 text-xs text-white/60">Wpisz od 1 do 6 cyfr.</p>
-              </div>
-
-              <div>
                 <label className="text-sm font-semibold text-white/80">Ranga</label>
                 <select
                   className="input bg-white text-black"
@@ -2763,11 +2674,7 @@ export default function Admin() {
                   }
                 >
                   {ROLE_OPTIONS.map(({ value, label }) => (
-                    <option
-                      key={value}
-                      value={value}
-                      disabled={!canManageAllRoles && getRoleRank(value) > requesterRoleRank}
-                    >
+                    <option key={value} value={value}>
                       {label}
                     </option>
                   ))}
@@ -2797,7 +2704,7 @@ export default function Admin() {
                 <p className="text-xs text-white/60">
                   {canToggleAdmin
                     ? "Osoby z uprawnieniami administratora są oznaczone gwiazdką na liście kont."
-                    : "Tylko rangi Admin, Director i Chief Of Police mogą nadawać uprawnienia administratora."}
+                    : "Tylko konta o roli Administrator mogą nadawać uprawnienia administratora."}
                 </p>
               </div>
 

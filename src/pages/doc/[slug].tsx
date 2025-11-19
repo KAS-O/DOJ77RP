@@ -26,8 +26,6 @@ type Person = {
   fullName?: string;
   login?: string;
   rank?: string;
-  badgeNumber?: string | number;
-  badge?: string | number;
 };
 
 type FieldRender = {
@@ -99,7 +97,6 @@ type WniosekTextInput = {
   attachments: string;
   authorRank: string;
   authorName: string;
-  authorBadge: string;
 };
 
 const buildWniosekTextLines = (input: WniosekTextInput): string[] => {
@@ -111,14 +108,10 @@ const buildWniosekTextLines = (input: WniosekTextInput): string[] => {
   const formattedDate = formatDocumentDate(input.date);
   const formattedEventDate = formatDocumentDate(input.eventDate);
 
-  const badgeValue = input.authorBadge.trim();
   const rankValue = input.authorRank.trim();
   const nameValue = input.authorName.trim();
   const baseOfficerName = [rankValue, nameValue].filter(Boolean).join(" ").trim();
-  const officerLineBase = baseOfficerName || "—";
-  const officerLine = badgeValue
-    ? `${baseOfficerName ? baseOfficerName : "—"} (Odznaka ${badgeValue})`
-    : officerLineBase;
+  const officerLine = baseOfficerName || "—";
   const closingOfficerLine = baseOfficerName || "—";
 
   const descriptionLines = input.description
@@ -200,9 +193,7 @@ export default function DocPage() {
     const fullName = (profile?.fullName || "").trim();
     const login = (profile?.login || "").trim();
     const rank = typeof profile?.rank === "string" ? profile.rank.trim() : "";
-    const rawBadge = profile?.badgeNumber ?? profile?.badge;
-    const badge = rawBadge != null ? String(rawBadge).trim() : "";
-    return { fullName, login, rank, badge };
+    return { fullName, login, rank };
   }, [profiles, currentUid]);
 
   const authorDisplayName = authorDetails.fullName || authorDetails.login || currentUid || "";
@@ -319,7 +310,6 @@ export default function DocPage() {
       attachments: values["zalaczniki"] || "",
       authorRank: authorDetails.rank,
       authorName: authorDisplayName,
-      authorBadge: authorDetails.badge,
     } as WniosekTextInput;
   }, [authorDetails, authorDisplayName, isWniosekTemplate, signature, values]);
 
@@ -599,11 +589,10 @@ export default function DocPage() {
           eventDate: values["dataZdarzenia"] || "",
           eventLocation: values["miejsceZdarzenia"] || "",
           description: values["opisCzynu"] || "",
-          attachments: values["zalaczniki"] || "",
-          authorRank: authorDetails.rank,
-          authorName: authorDisplayName,
-          authorBadge: authorDetails.badge,
-        });
+        attachments: values["zalaczniki"] || "",
+        authorRank: authorDetails.rank,
+        authorName: authorDisplayName,
+      });
         fieldLinesForText = wniosekLinesForStorage;
         textPages = [wniosekLinesForStorage.join("\n")];
       }

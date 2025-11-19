@@ -25,7 +25,7 @@ import { useDialog } from "@/components/DialogProvider";
 import { useSessionActivity } from "@/components/ActivityLogger";
 import { useLogWriter } from "@/hooks/useLogWriter";
 import { getActiveVehicleFlags, getVehicleHighlightStyle } from "@/lib/vehicleFlags";
-import { hasBoardAccess, hasOfficerAccess } from "@/lib/roles";
+import { hasOfficerAccess } from "@/lib/roles";
 
 type RecordAttachment = {
   url: string;

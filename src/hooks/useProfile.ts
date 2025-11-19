@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { auth, db } from "@/lib/firebase";
 import { doc, getDoc, setDoc, onSnapshot, serverTimestamp } from "firebase/firestore";
-import { Role, normalizeRole, hasBoardAccess, hasOfficerAccess, DEFAULT_ROLE } from "@/lib/roles";
+import { Role, normalizeRole, hasOfficerAccess, DEFAULT_ROLE } from "@/lib/roles";
 import { normalizeAdditionalRanks, normalizeInternalUnits, type AdditionalRank, type InternalUnit } from "@/lib/hr";
 export type { Role } from "@/lib/roles";
 
@@ -9,7 +9,6 @@ export function useProfile() {
   const [role, setRole] = useState<Role | null>(null);
   const [login, setLogin] = useState<string | null>(null);
   const [fullName, setFullName] = useState<string | null>(null);
-  const [badgeNumber, setBadgeNumber] = useState<string | null>(null);
   const [units, setUnits] = useState<InternalUnit[]>([]);
   const [additionalRanks, setAdditionalRanks] = useState<AdditionalRank[]>([]);
   const [photoURL, setPhotoURL] = useState<string | null>(null);
@@ -23,7 +22,6 @@ export function useProfile() {
       setRole(null);
       setLogin(null);
       setFullName(null);
-      setBadgeNumber(null);
       setReady(true);
       return;
     }
@@ -51,12 +49,6 @@ export function useProfile() {
       const d = s.data() || {};
       setRole(normalizeRole(d.role));
       setFullName(d.fullName || userLogin);
-      if (typeof d.badgeNumber === "string") {
-        const trimmed = d.badgeNumber.trim();
-        setBadgeNumber(trimmed ? trimmed : null);
-      } else {
-        setBadgeNumber(null);
-      }
       setUnits(normalizeInternalUnits(d.units));
       setAdditionalRanks(normalizeAdditionalRanks(d.additionalRanks ?? d.additionalRank));
       setAdminPrivileges(!!(d.adminPrivileges ?? d.isAdmin));
@@ -74,7 +66,6 @@ export function useProfile() {
     role,
     login,
     fullName,
-    badgeNumber,
     units,
     additionalRanks,
     photoURL,
@@ -87,11 +78,9 @@ export function useProfile() {
 // Uprawnienia
 export const can = {
   seeArchive: (role: Role | null, adminPrivileges = false) => !!role,
-  deleteArchive: (role: Role | null, adminPrivileges = false) =>
-    adminPrivileges || hasBoardAccess(role),
-  seeLogs: (role: Role | null, adminPrivileges = false) => adminPrivileges || hasBoardAccess(role),
-  manageRoles: (role: Role | null, adminPrivileges = false) => adminPrivileges || hasBoardAccess(role),
-  manageFinance: (role: Role | null, adminPrivileges = false) => adminPrivileges || hasBoardAccess(role),
-  editRecords: (role: Role | null, adminPrivileges = false) =>
-    adminPrivileges || hasBoardAccess(role) || hasOfficerAccess(role), // edycja/usuwanie wpisów w teczkach
+  deleteArchive: (_role: Role | null, adminPrivileges = false) => adminPrivileges,
+  seeLogs: (_role: Role | null, adminPrivileges = false) => adminPrivileges,
+  manageRoles: (_role: Role | null, adminPrivileges = false) => adminPrivileges,
+  manageFinance: (_role: Role | null, adminPrivileges = false) => adminPrivileges,
+  editRecords: (_role: Role | null, adminPrivileges = false) => adminPrivileges || hasOfficerAccess(_role),
 };

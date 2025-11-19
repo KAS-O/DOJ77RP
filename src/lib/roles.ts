@@ -1,55 +1,29 @@
 export const ROLE_VALUES = [
-  "cadet",
-  "solo-cadet",
-  "officer-i",
-  "officer-ii",
-  "officer-iii",
-  "officer-iii-plus-i",
-  "fib",
-  "sergeant-i",
-  "sergeant-ii",
-  "sergeant-iii",
-  "lieutenant-i",
-  "lieutenant-ii",
-  "captain-i",
-  "captain-ii",
-  "captain-iii",
-  "staff-commander",
-  "executive-commander",
-  "deputy-chief",
-  "assistant-chief",
-  "chief-of-police",
-  "director",
+  "sedzia-najwyzszy",
+  "sedzia",
+  "asystent-sedziego",
+  "prokurator-generalny",
+  "prokurator",
+  "asesor-prokuratora",
+  "irs",
+  "adwokat",
   "admin",
 ] as const;
 
 export type Role = (typeof ROLE_VALUES)[number];
 
-export const DEFAULT_ROLE: Role = ROLE_VALUES[0];
+export const DEFAULT_ROLE: Role = "adwokat";
 
 const ROLE_LABEL_MAP: Record<Role, string> = {
-  "cadet": "Cadet",
-  "solo-cadet": "Solo Cadet",
-  "officer-i": "Officer I",
-  "officer-ii": "Officer II",
-  "officer-iii": "Officer III",
-  "officer-iii-plus-i": "Officer III+I",
-  "fib": "FIB",
-  "sergeant-i": "Sergeant I",
-  "sergeant-ii": "Sergeant II",
-  "sergeant-iii": "Sergeant III",
-  "lieutenant-i": "Lieutenant I",
-  "lieutenant-ii": "Lieutenant II",
-  "captain-i": "Captain I",
-  "captain-ii": "Captain II",
-  "captain-iii": "Captain III",
-  "staff-commander": "Staff Commander",
-  "executive-commander": "Executive Commander",
-  "deputy-chief": "Deputy Chief",
-  "assistant-chief": "Assistant Chief",
-  "chief-of-police": "Chief Of Police",
-  "director": "Director",
-  "admin": "Admin",
+  "sedzia-najwyzszy": "Sędzia najwyższy",
+  "sedzia": "Sędzia",
+  "asystent-sedziego": "Asystent sędziego",
+  "prokurator-generalny": "Prokurator generalny",
+  "prokurator": "Prokurator",
+  "asesor-prokuratora": "Asesor prokuratora",
+  irs: "IRS",
+  adwokat: "Adwokat",
+  admin: "Administrator",
 };
 
 export const ROLE_LABELS = ROLE_LABEL_MAP;
@@ -62,28 +36,15 @@ export const ROLE_OPTIONS: { value: Role; label: string }[] = ROLE_VALUES.filter
 }));
 
 const ROLE_GROUP_LABEL_MAP: Record<Role, string> = {
-  director: "Zarząd i administracja",
-  admin: "Zarząd i administracja",
-  "chief-of-police": "High Command",
-  "assistant-chief": "High Command",
-  "deputy-chief": "High Command",
-  "executive-commander": "High Command",
-  "staff-commander": "High Command",
-  "captain-iii": "Command",
-  "captain-ii": "Command",
-  "captain-i": "Command",
-  "lieutenant-ii": "Command",
-  "lieutenant-i": "Command",
-  "sergeant-iii": "Supervisors",
-  "sergeant-ii": "Supervisors",
-  "sergeant-i": "Supervisors",
-  "officer-iii-plus-i": "Officers",
-  "officer-iii": "Officers",
-  "officer-ii": "Officers",
-  "officer-i": "Officers",
-  "solo-cadet": "Trainee",
-  cadet: "Trainee",
-  fib: "Federal Investigation Bureau",
+  "sedzia-najwyzszy": "Sądownictwo",
+  sedzia: "Sądownictwo",
+  "asystent-sedziego": "Sądownictwo",
+  "prokurator-generalny": "Prokuratura",
+  prokurator: "Prokuratura",
+  "asesor-prokuratora": "Prokuratura",
+  irs: "Internal Revenue Service",
+  adwokat: "Palestra Adwokacka",
+  admin: "Administracja",
 };
 
 export function getRoleGroupLabel(role: Role | null | undefined): string | null {
@@ -92,65 +53,25 @@ export function getRoleGroupLabel(role: Role | null | undefined): string | null 
 }
 
 const ROLE_ALIASES: Record<string, Role> = {
-  "cadet": "cadet",
-  "solo cadet": "solo-cadet",
-  "solo-cadet": "solo-cadet",
-  "officer i": "officer-i",
-  "officer-i": "officer-i",
-  "officer ii": "officer-ii",
-  "officer-ii": "officer-ii",
-  "officer iii": "officer-iii",
-  "officer-iii": "officer-iii",
-  "officer iii+i": "officer-iii-plus-i",
-  "officer iii plus i": "officer-iii-plus-i",
-  "officer-iii+i": "officer-iii-plus-i",
-  "officer-iii-plus-i": "officer-iii-plus-i",
-  "fib": "fib",
-  "fib agent": "fib",
-  "sergeant i": "sergeant-i",
-  "sergeant-i": "sergeant-i",
-  "sergeant ii": "sergeant-ii",
-  "sergeant-ii": "sergeant-ii",
-  "sergeant iii": "sergeant-iii",
-  "sergeant-iii": "sergeant-iii",
-  "lieutenant i": "lieutenant-i",
-  "lieutenant-i": "lieutenant-i",
-  "lieutenant ii": "lieutenant-ii",
-  "lieutenant-ii": "lieutenant-ii",
-  "captain i": "captain-i",
-  "captain-i": "captain-i",
-  "captain ii": "captain-ii",
-  "captain-ii": "captain-ii",
-  "captain iii": "captain-iii",
-  "captain-iii": "captain-iii",
-  "staff commander": "staff-commander",
-  "staff-commander": "staff-commander",
-  "executive commander": "executive-commander",
-  "executive-commander": "executive-commander",
-  "deputy chief": "deputy-chief",
-  "deputy-chief": "deputy-chief",
-  "assistant chief": "assistant-chief",
-  "assistant-chief": "assistant-chief",
-  "chief of police": "chief-of-police",
-  "chief-of-police": "chief-of-police",
-  "director": "director",
-  "admin": "admin",
-  // legacy mappings
-  "rookie": "cadet",
-  "agent": "officer-i",
-  "senior": "sergeant-i",
-  "chief": "chief-of-police",
+  "sedzia najwyzszy": "sedzia-najwyzszy",
+  "sedzia-najwyzszy": "sedzia-najwyzszy",
+  "sedzia": "sedzia",
+  "asystent sedziego": "asystent-sedziego",
+  "asystent-sedziego": "asystent-sedziego",
+  "prokurator generalny": "prokurator-generalny",
+  "prokurator-generalny": "prokurator-generalny",
+  "prokurator": "prokurator",
+  "asesor prokuratora": "asesor-prokuratora",
+  "asesor-prokuratora": "asesor-prokuratora",
+  irs: "irs",
+  "agent irs": "irs",
+  adwokat: "adwokat",
+  "adw": "adwokat",
+  administrator: "admin",
+  admin: "admin",
 };
 
-export const BOARD_ROLES: Role[] = [
-  "staff-commander",
-  "executive-commander",
-  "deputy-chief",
-  "assistant-chief",
-  "chief-of-police",
-  "director",
-  "admin",
-];
+export const BOARD_ROLES: Role[] = [];
 
 const BOARD_ROLE_SET = new Set<Role>(BOARD_ROLES);
 
@@ -159,24 +80,14 @@ export function hasBoardAccess(role: Role | null | undefined): role is Role {
 }
 
 export function hasOfficerAccess(role: Role | null | undefined): role is Role {
-  if (!role) return false;
-  return role !== "cadet" && role !== "solo-cadet";
+  return !!role;
 }
 
 export function canAssignAdminPrivileges(role: Role | null | undefined): role is Role {
-  if (!role) return false;
-  return role === "admin" || role === "director" || role === "chief-of-police";
+  return role === "admin";
 }
 
-export const HIGH_COMMAND_ROLES: Role[] = [
-  "staff-commander",
-  "executive-commander",
-  "deputy-chief",
-  "assistant-chief",
-  "chief-of-police",
-  "director",
-  "admin",
-];
+export const HIGH_COMMAND_ROLES: Role[] = [];
 
 const HIGH_COMMAND_ROLE_SET = new Set<Role>(HIGH_COMMAND_ROLES);
 

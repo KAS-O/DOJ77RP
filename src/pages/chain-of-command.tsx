@@ -29,40 +29,34 @@ const ROLE_ORDER = new Map<Role, number>(ROLE_VALUES.map((role, index) => [role,
 
 const ROLE_GROUPS: { id: string; title: string; accent: string; roles: Role[] }[] = [
   {
-    id: "directors-fib",
-    title: "Directors & FIB",
-    accent: "#f97316",
-    roles: ["director", "fib"],
+    id: "judiciary",
+    title: "Sądownictwo",
+    accent: "#facc15",
+    roles: ["sedzia-najwyzszy", "sedzia", "asystent-sedziego"],
   },
   {
-    id: "command",
-    title: "High Command",
-    accent: "#fb7185",
-    roles: ["chief-of-police", "assistant-chief", "deputy-chief", "executive-commander", "staff-commander"],
+    id: "prosecutors",
+    title: "Prokuratura",
+    accent: "#fb923c",
+    roles: ["prokurator-generalny", "prokurator", "asesor-prokuratora"],
   },
   {
-    id: "executive",
-    title: "Command",
+    id: "irs",
+    title: "Internal Revenue Service",
     accent: "#38bdf8",
-    roles: ["captain-iii", "captain-ii", "captain-i", "lieutenant-ii", "lieutenant-i"],
+    roles: ["irs"],
   },
   {
-    id: "supervisors",
-    title: "Supervisors",
-    accent: "#22c55e",
-    roles: ["sergeant-iii", "sergeant-ii", "sergeant-i"],
+    id: "advocates",
+    title: "Palestra Adwokacka",
+    accent: "#a855f7",
+    roles: ["adwokat"],
   },
   {
-    id: "officers",
-    title: "Officers",
-    accent: "#6366f1",
-    roles: ["officer-iii-plus-i", "officer-iii", "officer-ii", "officer-i"],
-  },
-  {
-    id: "trainee",
-    title: "Trainee",
-    accent: "#f59e0b",
-    roles: ["solo-cadet", "cadet"],
+    id: "administration",
+    title: "Administracja techniczna",
+    accent: "#f97316",
+    roles: ["admin"],
   },
 ];
 
@@ -92,7 +86,6 @@ type ChainMember = {
   login: string;
   fullName: string;
   role: Role;
-  badgeNumber?: string;
   department: Department | null;
   units: InternalUnit[];
   additionalRanks: AdditionalRank[];
@@ -132,9 +125,6 @@ function MemberBadge({ member, highlight }: { member: ChainMember; highlight: bo
             </span>
           )}
         </span>
-        {member.badgeNumber && (
-          <span className="text-[11px] font-mono text-white/60">#{member.badgeNumber}</span>
-        )}
       </div>
       <div className="text-[11px] text-white/50">{ROLE_LABELS[member.role] || member.role}</div>
       <div className="mt-2 flex flex-wrap gap-1">
@@ -206,15 +196,12 @@ export default function ChainOfCommandPage() {
           const department = normalizeDepartment(data?.department);
           const units = normalizeInternalUnits(data?.units);
           const additionalRanks = normalizeAdditionalRanks(data?.additionalRanks ?? data?.additionalRank);
-          const badge =
-            typeof data?.badgeNumber === "string" ? data.badgeNumber.trim() : undefined;
 
           return {
             uid: docSnap.id,
             login: baseLogin,
             fullName: fullName || baseLogin,
             role,
-            badgeNumber: badge,
             department: department ?? null,
             units,
             additionalRanks,
@@ -247,7 +234,7 @@ export default function ChainOfCommandPage() {
 
   useEffect(() => {
     if (!session) return;
-    void logActivity({ type: "page_view", path: "/chain-of-command", title: "Chain of Command" });
+    void logActivity({ type: "page_view", path: "/chain-of-command", title: "Skład departamentu" });
   }, [logActivity, session]);
 
   const normalizedLogin = login ? login.toLowerCase() : null;
@@ -317,7 +304,7 @@ export default function ChainOfCommandPage() {
     <AuthGate>
       <>
         <Head>
-          <title>DOJ 77RP — Chain of Command</title>
+          <title>DOJ 77RP — Skład departamentu</title>
         </Head>
         <Nav showSidebars={false} />
 
@@ -329,12 +316,12 @@ export default function ChainOfCommandPage() {
                 <div className="space-y-2">
                   <span className="section-chip">
                     <span className="section-chip__dot" style={{ background: "#facc15" }} aria-hidden />
-                    Chain of Command
+                    Skład departamentu
                   </span>
                   <div>
-                    <h1 className="text-3xl font-bold tracking-tight text-white">Spis Funkcjonariuszy</h1>
+                    <h1 className="text-3xl font-bold tracking-tight text-white">Skład departamentu</h1>
                     <p className="text-sm text-white/70">
-                      Aktualny wykaz funkcjonariuszy wraz z przypisaniami departamentów i jednostek specjalistycznych.
+                      Aktualny wykaz członków Department of Justice wraz z przypisaniami departamentów i jednostek specjalistycznych.
                     </p>
                   </div>
                 </div>
@@ -399,7 +386,7 @@ export default function ChainOfCommandPage() {
 
                     {loading && members.length === 0 && (
                       <div className="rounded-3xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white/60">
-                        Ładowanie struktury dowodzenia…
+                        Ładowanie składu departamentu…
                       </div>
                     )}
                   </div>
@@ -431,9 +418,6 @@ export default function ChainOfCommandPage() {
                                 {deptMembers.map((member) => (
                                   <li key={`${option.value}-${member.uid}`} className="flex flex-wrap items-center gap-2">
                                     <span className="font-medium">{formatPersonLabel(member.fullName, member.login)}</span>
-                                    {member.badgeNumber && (
-                                      <span className="text-[11px] font-mono text-white/50">#{member.badgeNumber}</span>
-                                    )}
                                   </li>
                                 ))}
                               </ul>
