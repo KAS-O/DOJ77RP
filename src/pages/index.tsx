@@ -86,7 +86,7 @@ export default function LoginPage() {
     <AuthGate>
       <>
         <Head>
-          <title>LSPD 77RP — Logowanie</title>
+          <title>DOJ 77RP — Logowanie</title>
         </Head>
 
         <div className="login-layout">
@@ -96,14 +96,14 @@ export default function LoginPage() {
                 {/* Jeśli masz PNG: zmień logo.svg na logo.png */}
                 <Image
                   src="/logo.png"
-                  alt="LSPD"
+                  alt="DOJ"
                   width={320}
                   height={80}
                   priority
                   className="floating w-full max-w-[260px] sm:max-w-[320px] h-auto"
                 />
                 <h1 className="text-xl font-semibold text-center">
-                  <span className="block">Los Santos Police Department</span>
+                  <span className="block">Department of Justice</span>
                   <span className="block">Mobile Data Terminal</span>
                 </h1>
               </div>

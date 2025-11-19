@@ -1848,7 +1848,7 @@ export default function Admin() {
   if (!ready) {
     return (
       <AuthGate>
-        <Head><title>LSPD 77RP — Panel zarządu</title></Head>
+        <Head><title>DOJ 77RP — Panel zarządu</title></Head>
         <Nav showSidebars={false} />
         <DashboardLayout
           left={<UnitsPanel />}
@@ -1861,7 +1861,7 @@ export default function Admin() {
   if (!hasAdminAccess) {
     return (
       <AuthGate>
-        <Head><title>LSPD 77RP — Panel zarządu</title></Head>
+        <Head><title>DOJ 77RP — Panel zarządu</title></Head>
         <Nav showSidebars={false} />
         <DashboardLayout
           left={<UnitsPanel />}
@@ -1879,7 +1879,7 @@ export default function Admin() {
   return (
     <AuthGate>
       <>
-        <Head><title>LSPD 77RP — Panel zarządu</title></Head>
+        <Head><title>DOJ 77RP — Panel zarządu</title></Head>
         <Nav showSidebars={false} />
 
         <DashboardLayout

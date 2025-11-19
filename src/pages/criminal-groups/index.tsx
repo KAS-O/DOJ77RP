@@ -9,14 +9,14 @@ export default function CriminalGroupsRedirectPage() {
   const router = useRouter();
 
   useEffect(() => {
-    router.replace("/units/gu");
+    router.replace("/units/prokuratura");
   }, [router]);
 
   return (
     <AuthGate>
       <>
         <Head>
-          <title>LSPD 77RP — Grupy przestępcze</title>
+          <title>DOJ 77RP — Grupy przestępcze</title>
         </Head>
         <Nav />
         <main className="min-h-screen px-4 py-8">
@@ -29,7 +29,7 @@ export default function CriminalGroupsRedirectPage() {
               <div className="space-y-3">
                 <h1 className="text-3xl font-semibold tracking-tight text-white">Sekcja została przeniesiona</h1>
                 <p className="text-sm text-white/70">
-                  Rejestr grup przestępczych jest teraz dostępny bezpośrednio w panelach jednostek GU oraz DTU.
+                  Rejestr grup przestępczych jest teraz dostępny bezpośrednio w panelach jednostek IRS oraz Prokuratury.
                   Wszystkie wpisy są wspólne dla obu wydziałów.
                 </p>
                 <p className="text-sm text-white/70">
@@ -37,11 +37,11 @@ export default function CriminalGroupsRedirectPage() {
                 </p>
               </div>
               <div className="flex flex-wrap gap-3">
-                <Link className="btn text-sm" href="/units/gu">
-                  Przejdź do GU
+                <Link className="btn text-sm" href="/units/irs">
+                  Przejdź do IRS
                 </Link>
-                <Link className="btn text-sm" href="/units/dtu">
-                  Przejdź do DTU
+                <Link className="btn text-sm" href="/units/prokuratura">
+                  Przejdź do Prokuratury
                 </Link>
               </div>
             </div>

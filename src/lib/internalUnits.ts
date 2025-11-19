@@ -9,48 +9,32 @@ export type UnitSectionConfig = {
   navColor: string;
   rankHierarchy: AdditionalRank[];
   membershipRank: AdditionalRank | null;
-  icon: string;
+  icon?: string | null;
 };
 
 const BASE_UNIT_CONFIG: Record<
   InternalUnit,
-  { navColor: string; rankHierarchy: AdditionalRank[]; membershipRank: AdditionalRank | null; iconName: string }
+  { navColor: string; rankHierarchy: AdditionalRank[]; membershipRank: AdditionalRank | null }
 > = {
-  iad: {
-    navColor: "#ef4444",
-    rankHierarchy: ["opiekun-iad", "iad-chief-inspector", "iad-deputy-chief-inspector"],
-    membershipRank: "iad",
-    iconName: "iad.png",
+  irs: {
+    navColor: "#b77d4b",
+    rankHierarchy: ["irs-koordynator", "irs-inspektor"],
+    membershipRank: null,
   },
-  "swat-sert": {
-    navColor: "#64748b",
-    rankHierarchy: ["opiekun-swat-sert", "swat-commander", "swat-deputy-commander"],
-    membershipRank: "swat-sert",
-    iconName: "swat-sert.png",
+  sadownictwo: {
+    navColor: "#8d6946",
+    rankHierarchy: ["sadownictwo-przewodniczacy", "sadownictwo-sedzia"],
+    membershipRank: null,
   },
-  usms: {
-    navColor: "#eab308",
-    rankHierarchy: ["opiekun-usms", "us-marshal"],
-    membershipRank: "usms",
-    iconName: "usms.png",
+  prokuratura: {
+    navColor: "#9b6a3c",
+    rankHierarchy: ["prokuratura-naczelnik", "prokuratura-prokurator"],
+    membershipRank: null,
   },
-  dtu: {
-    navColor: "#22d3ee",
-    rankHierarchy: ["opiekun-dtu", "dtu-commander", "dtu-deputy-commander"],
-    membershipRank: "dtu",
-    iconName: "dtu.png",
-  },
-  gu: {
-    navColor: "#10b981",
-    rankHierarchy: ["opiekun-gu", "gu-commander", "gu-deputy-commander"],
-    membershipRank: "gu",
-    iconName: "gu.png",
-  },
-  ftd: {
-    navColor: "#6366f1",
-    rankHierarchy: ["opiekun-ftd", "ftd-commander", "ftd-deputy-commander"],
-    membershipRank: "ftd",
-    iconName: "ftd.png",
+  palestra: {
+    navColor: "#c48c5c",
+    rankHierarchy: ["palestra-dziekan", "palestra-rzecznik"],
+    membershipRank: null,
   },
 };
 
@@ -65,7 +49,7 @@ export const UNIT_SECTIONS: UnitSectionConfig[] = (Object.keys(BASE_UNIT_CONFIG)
     navColor: config.navColor,
     rankHierarchy: config.rankHierarchy.slice(),
     membershipRank: config.membershipRank,
-    icon: `/unit-logos/${config.iconName}`,
+    icon: null,
   };
 });
 

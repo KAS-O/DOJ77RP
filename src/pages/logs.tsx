@@ -22,7 +22,7 @@ export default function LogsPage() {
 
   return (
     <AuthGate>
-      <Head><title>LSPD 77RP — Logi</title></Head>
+      <Head><title>DOJ 77RP — Logi</title></Head>
       <Nav showSidebars={false} />
       <DashboardLayout
         left={<UnitsPanel />}

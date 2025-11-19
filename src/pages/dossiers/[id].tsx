@@ -1928,7 +1928,7 @@ export default function DossierPage() {
     <AuthGate>
       <>
         <Head>
-          <title>LSPD 77RP — {personTitle}</title>
+          <title>DOJ 77RP — {personTitle}</title>
         </Head>
         <Nav />
         <div

@@ -10,10 +10,10 @@ import { UNIT_SECTIONS, unitHasAccess } from "@/lib/internalUnits";
 import UnitSidebar from "@/components/UnitSidebar";
 
 const NAV_LINKS: { href: string; label: string; color: string }[] = [
-  { href: "/dashboard", label: "Dokumenty", color: "#60a5fa" },
-  { href: "/chain-of-command", label: "Chain of Command", color: "#f97316" },
-  { href: "/dossiers", label: "Teczki", color: "#8b5cf6" },
-  { href: "/vehicle-archive", label: "Archiwum pojazdów", color: "#34d399" },
+  { href: "/dashboard", label: "Dokumenty", color: "#c49a6a" },
+  { href: "/chain-of-command", label: "Chain of Command", color: "#8d6b4c" },
+  { href: "/dossiers", label: "Teczki", color: "#a57a52" },
+  { href: "/vehicle-archive", label: "Archiwum pojazdów", color: "#d8b38a" },
 ];
 
 function withAlpha(hex: string, alpha: number): string {
@@ -30,17 +30,17 @@ function withAlpha(hex: string, alpha: number): string {
     const b = parseInt(normalized.slice(4, 6), 16);
     return `rgba(${r}, ${g}, ${b}, ${alpha})`;
   }
-  return `rgba(96, 165, 250, ${alpha})`;
+  return `rgba(198, 150, 96, ${alpha})`;
 }
 
 function createNavStyle(color: string, active: boolean): CSSProperties {
   return {
     borderColor: withAlpha(color, active ? 0.85 : 0.55),
-    background: `linear-gradient(135deg, ${withAlpha(color, active ? 0.42 : 0.28)}, rgba(5, 10, 20, 0.78))`,
+    background: `linear-gradient(135deg, ${withAlpha(color, active ? 0.45 : 0.32)}, rgba(14, 9, 6, 0.85))`,
     boxShadow: active
       ? `0 18px 36px -18px ${withAlpha(color, 0.85)}`
       : `0 14px 32px -20px ${withAlpha(color, 0.7)}`,
-    color: "#f8fafc",
+    color: "#f5e7cf",
   };
 }
 
@@ -79,9 +79,9 @@ export default function Nav({ showSidebars = true }: NavProps) {
         <div className="nav-shell">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-center gap-3 min-w-[220px]">
-              <img src="/logo.png" alt="LSPD" width={32} height={32} className="floating" />
+              <img src="/logo.png" alt="DOJ" width={32} height={32} className="floating" />
               <span className="font-semibold tracking-wide text-beige-900/90">
-                Los Santos Police Department
+                Department of Justice
               </span>
             </div>
           </div>
@@ -122,9 +122,9 @@ export default function Nav({ showSidebars = true }: NavProps) {
                   <Link
                     href="/archive"
                     className={`nav-pill shrink-0${archiveActive ? " nav-pill--active" : ""}`}
-                    style={createNavStyle("#facc15", archiveActive)}
+                    style={createNavStyle("#d3a158", archiveActive)}
                   >
-                    <span className="nav-pill__dot" style={{ background: "#facc15" }} aria-hidden />
+                    <span className="nav-pill__dot" style={{ background: "#d3a158" }} aria-hidden />
                     Archiwum
                   </Link>
                 )}
@@ -132,9 +132,9 @@ export default function Nav({ showSidebars = true }: NavProps) {
                   <Link
                     href="/admin"
                     className={`nav-pill shrink-0${adminActive ? " nav-pill--active" : ""}`}
-                    style={createNavStyle("#0ea5e9", adminActive)}
+                    style={createNavStyle("#b27645", adminActive)}
                   >
-                    <span className="nav-pill__dot" style={{ background: "#0ea5e9" }} aria-hidden />
+                    <span className="nav-pill__dot" style={{ background: "#b27645" }} aria-hidden />
                     Panel zarządu
                   </Link>
                 )}

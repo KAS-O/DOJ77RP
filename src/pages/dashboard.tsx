@@ -11,7 +11,7 @@ export default function Dashboard() {
     <AuthGate>
       <>
         <Head>
-          <title>LSPD 77RP — Dashboard</title>
+          <title>DOJ 77RP — Dashboard</title>
         </Head>
 
         <Nav showSidebars={false} />

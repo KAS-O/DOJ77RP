@@ -175,7 +175,7 @@ export default function Dossiers() {
   return (
     <AuthGate>
       <>
-        <Head><title>LSPD 77RP — Teczki</title></Head>
+        <Head><title>DOJ 77RP — Teczki</title></Head>
         <Nav showSidebars={false} />
         <DashboardLayout
           left={<UnitsPanel />}
