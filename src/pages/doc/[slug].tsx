@@ -144,21 +144,21 @@ const buildWniosekTextLines = (input: WniosekTextInput): string[] => {
   return [
     `Sygnatura: ${signature}`,
     `Data: ${formattedDate}`,
-    "Jednostka: Los Santos Police Department",
+    "Jednostka: Department of Justice",
     `Funkcjonariusz sporządzający: ${officerLine}`,
-    "Na podstawie przeprowadzonych czynności służbowych oraz zgromadzonego materiału dowodowego, Los Santos Police Department składa niniejszy wniosek do Prokuratury Los Santos o wszczęcie postępowania przygotowawczego wobec:",
+    "Na podstawie przeprowadzonych czynności służbowych oraz zgromadzonego materiału dowodowego, Department of Justice składa niniejszy wniosek do Biura Prokuratury DOJ o wszczęcie postępowania przygotowawczego wobec:",
     citizenName,
     `CID: ${cid}`,
     `w związku z uzasadnionym podejrzeniem popełnienia czynu zabronionego określonego w ${articleName}.`,
     `W toku prowadzonych czynności ustalono, że w dniu ${formattedEventDate} na terenie ${eventLocation} ${citizenName} dopuścił/a się czynu polegającego na:`,
     ...descriptionLines,
     "Zgromadzony materiał dowodowy wskazuje na zasadność wszczęcia postępowania przygotowawczego w przedmiotowej sprawie.",
-    "W związku z powyższym, Los Santos Police Department wnosi o podjęcie przez Prokuraturę Los Santos dalszych czynności procesowych zmierzających do wyjaśnienia wszystkich okoliczności zdarzenia oraz pociągnięcia sprawcy do odpowiedzialności karnej.",
+    "W związku z powyższym, Department of Justice wnosi o podjęcie przez Biuro Prokuratury DOJ dalszych czynności procesowych zmierzających do wyjaśnienia wszystkich okoliczności zdarzenia oraz pociągnięcia sprawcy do odpowiedzialności karnej.",
     "Do wniosku załączono:",
     ...attachmentsLines,
     "Z poważaniem,",
     closingOfficerLine,
-    "Los Santos Police Department",
+    "Department of Justice",
     "Wydział ds. wykroczeń",
   ];
 };
@@ -768,7 +768,7 @@ export default function DocPage() {
     <AuthGate>
       <>
         <Head>
-          <title>LSPD 77RP — {template.name}</title>
+          <title>DOJ 77RP — {template.name}</title>
         </Head>
         <div className="panel-layout">
           <div className="panel-header">
@@ -997,14 +997,14 @@ export default function DocPage() {
                             isWniosekTemplate ? "gap-2 mb-2.5" : "gap-2.5 mb-3"
                           }`}
                         >
-                          <img src="/logo.png" alt="LSPD" width={isWniosekTemplate ? 90 : 140} className="floating" />
+                          <img src="/logo.png" alt="DOJ" width={isWniosekTemplate ? 90 : 140} className="floating" />
                           <div className={isWniosekTemplate ? "space-y-1" : undefined}>
                             <div
                               className={`${
                                 isWniosekTemplate ? "text-lg font-bold leading-tight" : "text-xl font-bold"
                               }`}
                             >
-                              Los Santos Police Department
+                              Department of Justice
                             </div>
                             <div
                               className={`${
@@ -1073,7 +1073,7 @@ export default function DocPage() {
                         )}
 
                         <div className={`${isWniosekTemplate ? "mt-5 text-[10px]" : "mt-6 text-[11px]"} text-gray-600`}>
-                          Wygenerowano w panelu LSPD • {new Date().toLocaleString()}
+                          Wygenerowano w panelu DOJ • {new Date().toLocaleString()}
                         </div>
                       </div>
                     </div>

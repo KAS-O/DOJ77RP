@@ -22,10 +22,10 @@ export default function App({ Component, pageProps }: AppProps) {
           <Component {...pageProps} />
         </div>
         <footer className="relative z-10 w-full border-t border-white/10 bg-[var(--card)]/80 backdrop-blur py-4 text-center text-xs text-beige-900/80">
-          <p>© 2025 Los Santos Police Department. Wszelkie prawa zastrzeżone.</p>
+          <p>© 2025 Department of Justice. Wszelkie prawa zastrzeżone.</p>
           <p>
             Niniejsza strona oraz cała jej zawartość stanowią własność KASO i są przeznaczone wyłącznie dla
-            funkcjonariuszy Los Santos Police Department na serwerze 77RP.
+            funkcjonariuszy Department of Justice na serwerze 77RP.
           </p>
           <p>
             Kopiowanie, rozpowszechnianie, modyfikowanie lub wykorzystywanie materiałów ze strony bez uprzedniej,

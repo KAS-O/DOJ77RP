@@ -32,7 +32,7 @@ export const TEMPLATES: Template[] = [
   {
     slug: "bloczek-mandatowy",
     name: "Bloczek mandatowy",
-    signaturePrefix: "LSPD-BM",
+    signaturePrefix: "DOJ-BM",
     fields: [
       { key: "data", label: "Data", type: "date", required: true },
       { key: "sprawca", label: "Sprawca (imię i nazwisko)", type: "text", required: true },
@@ -49,7 +49,7 @@ export const TEMPLATES: Template[] = [
   {
     slug: "wniosek-o-ukaranie",
     name: "Wniosek o wszczęcie postępowania przygotowawczego",
-    signaturePrefix: "LSPD-WUS",
+    signaturePrefix: "DOJ-WUS",
     fields: [
       { key: "data", label: "Data", type: "date", required: true },
       {
@@ -71,7 +71,7 @@ export const TEMPLATES: Template[] = [
   {
     slug: "zgloszenie-kradziezy",
     name: "Zgłoszenie kradzieży",
-    signaturePrefix: "LSPD-ZK",
+    signaturePrefix: "DOJ-ZK",
     fields: [
       { key: "data", label: "Data", type: "date", required: true },
       { key: "zglaszajacy", label: "Zgłaszający (imię i nazwisko)", type: "text", required: true },
@@ -87,7 +87,7 @@ export const TEMPLATES: Template[] = [
   {
     slug: "protokol-aresztowania",
     name: "Protokół aresztowania",
-    signaturePrefix: "LSPD-PA",
+    signaturePrefix: "DOJ-PA",
     fields: [
       { key: "data", label: "Data", type: "date", required: true },
       { key: "godzina", label: "Godzina", type: "text", required: true },
@@ -124,7 +124,7 @@ export const TEMPLATES: Template[] = [
     slug: "raport-zalozenia-blokady",
     name: "Raport z założenia blokady",
     requiresVehicleFolder: true,
-    signaturePrefix: "LSPD-RB",
+    signaturePrefix: "DOJ-RB",
     vehicleNoteConfig: {
       amountField: "kara",
       amountLabel: "Kara do wydania przy zdjęciu blokady (USD)",
@@ -155,7 +155,7 @@ export const TEMPLATES: Template[] = [
     slug: "protokol-zajecia-pojazdu",
     name: "Protokół zajęcia pojazdu",
     requiresVehicleFolder: true,
-    signaturePrefix: "LSPD-PZP",
+    signaturePrefix: "DOJ-PZP",
     vehicleNoteConfig: {
       amountField: "grzywna",
       amountLabel: "Grzywna do wydania przy odbiorze pojazdu (USD)",

@@ -1,6 +1,6 @@
-# DPS Forms Starter
+# DOJ Operations Panel
 
-Minimalny panel formularzy dla Department of Public Safety (RP FiveM)
+Panel dokumentów i narzędzi wewnętrznych dla Department of Justice (RP FiveM)
 - Logowanie e‑mail/hasło (Firebase) – konta tworzy admin
 - Lista wzorów z wyszukiwarką
 - Dynamiczne formularze
@@ -27,26 +27,20 @@ firebase deploy --only storage:rules
 
 Reguły obejmują m.in. możliwość zakładania teczek (`/dossiers/{id}`) przez zalogowanych funkcjonariuszy oraz modyfikację wpisów tylko przez autora lub kadrę kierowniczą.
 
-## Ikony jednostek
-- Pliki z logotypami umieszczaj w katalogu `public/unit-logos/`.
-- Nazwy plików muszą odpowiadać identyfikatorom jednostek (np. `iad.png`, `swat-sert.png`, `usms.png`, `dtu.png`, `gu.png`, `ftd.png`).
-- Obsługiwany format to PNG z przezroczystym tłem (rekomendowana rozdzielczość: 256×256 px lub większa, kwadratowa).
-- Po podmianie obrazów nie jest wymagane przebudowanie kodu — komponenty same podładują nowe pliki.
+## Jednostki DOJ
+- Aktywne jednostki: IRS, Sądownictwo, Prokuratura, Palestra Adwokacka.
+- Wszystkie jednostki mają tekstowe identyfikatory (bez logotypów) i wspólne, beżowo‑brązowe oznaczenia w interfejsie.
+- Role dodatkowe (np. Koordynator IRS, Przewodniczący Sądownictwa) można przypisywać z poziomu panelu kadr.
 
 ## Dział kadr i konta użytkowników
-- Przy zakładaniu kont wymagany jest **numer odznaki** (1–6 cyfr). Numer można też edytować dla istniejących profili – pole jest
-  przechowywane w kolekcji `profiles` jako `badgeNumber`.
-- Panel kadrowy korzysta z REST API Firebase (`Identity Toolkit`) oraz kolekcji `profiles` w Firestore – nie jest już wymagane
-  konfigurowanie Firebase Admin SDK na serwerze.
+- Przy zakładaniu kont wymagany jest **numer odznaki** (1–6 cyfr). Numer można też edytować dla istniejących profili – pole jest przechowywane w kolekcji `profiles` jako `badgeNumber`.
+- Panel kadrowy korzysta z REST API Firebase (`Identity Toolkit`) oraz kolekcji `profiles` w Firestore – nie jest już wymagane konfigurowanie Firebase Admin SDK na serwerze.
 - W środowisku produkcyjnym upewnij się, że dostępne są zmienne środowiskowe:
   - `NEXT_PUBLIC_FIREBASE_API_KEY` (możesz opcjonalnie ustawić kopię w `FIREBASE_REST_API_KEY`),
   - `NEXT_PUBLIC_FIREBASE_PROJECT_ID` (lub osobno `FIREBASE_REST_PROJECT_ID`).
-- Po wdrożeniu zmian zaktualizuj reguły Firestore poleceniem `firebase deploy --only firestore:rules` – nowa wersja pozwala
-  kadrze dowódczej (`isBoard()`) tworzyć profile innych użytkowników.
-- Tworzenie kont odbywa się w pełni z poziomu panelu – po wprowadzeniu loginu, hasła i numeru odznaki profil zostaje automatycznie
-  dopisany do kolekcji `profiles`.
-- Resetowanie haseł lub usuwanie kont wymaga użycia konsoli Firebase (np. zakładki **Authentication**) – panel wyświetla linki
-  i umożliwia edycję danych profilowych, ale nie usuwa kont z Firebase Auth.
+- Po wdrożeniu zmian zaktualizuj reguły Firestore poleceniem `firebase deploy --only firestore:rules` – nowa wersja pozwala kadrze dowódczej (`isBoard()`) tworzyć profile innych użytkowników.
+- Tworzenie kont odbywa się w pełni z poziomu panelu – po wprowadzeniu loginu, hasła i numeru odznaki profil zostaje automatycznie dopisany do kolekcji `profiles`.
+- Resetowanie haseł lub usuwanie kont wymaga użycia konsoli Firebase (np. zakładki **Authentication**) – panel wyświetla linki i umożliwia edycję danych profilowych, ale nie usuwa kont z Firebase Auth.
 
 ## Zmiany w v2
 - Wysyłka **obrazu (PNG)** zamiast PDF – podgląd A4 robiony z HTML przez `html2canvas`.

@@ -193,7 +193,7 @@ export default function VehicleArchivePage() {
   return (
     <AuthGate>
       <>
-        <Head><title>LSPD 77RP — Archiwum pojazdów</title></Head>
+        <Head><title>DOJ 77RP — Archiwum pojazdów</title></Head>
         <Nav showSidebars={false} />
         <DashboardLayout
           left={<UnitsPanel />}
@@ -207,7 +207,7 @@ export default function VehicleArchivePage() {
                       Archiwum pojazdów
                     </span>
                     <div>
-                      <h1 className="text-3xl font-semibold tracking-tight">Rejestr pojazdów LSPD</h1>
+                      <h1 className="text-3xl font-semibold tracking-tight">Rejestr pojazdów DOJ</h1>
                       <p className="text-sm text-beige-100/75">
                         Przeglądaj i aktualizuj teczki pojazdów zabezpieczonych podczas działań operacyjnych.
                       </p>

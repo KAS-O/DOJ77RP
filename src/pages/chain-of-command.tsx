@@ -317,7 +317,7 @@ export default function ChainOfCommandPage() {
     <AuthGate>
       <>
         <Head>
-          <title>LSPD 77RP — Chain of Command</title>
+          <title>DOJ 77RP — Chain of Command</title>
         </Head>
         <Nav showSidebars={false} />
 

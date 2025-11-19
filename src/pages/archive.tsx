@@ -660,7 +660,7 @@ export default function ArchivePage() {
       const nowDisplay = now.toLocaleString("pl-PL");
 
       const confidentialityNotice =
-        "Dokument stanowi raport z czynności służbowych funkcjonariuszy LSPD, obejmujących okres wskazany w szczegółach dokumentu. Raport jest objęty klauzulą poufności i przeznaczony wyłącznie do użytku wewnętrznego Los Santos Police Department. Udostępnianie lub modyfikowanie bez upoważnienia jest zabronione. Dokument został wygenerowany za pośrednictwem Mobile Data Terminal LSPD.";
+        "Dokument stanowi raport z czynności służbowych funkcjonariuszy DOJ, obejmujących okres wskazany w szczegółach dokumentu. Raport jest objęty klauzulą poufności i przeznaczony wyłącznie do użytku wewnętrznego Department of Justice. Udostępnianie lub modyfikowanie bez upoważnienia jest zabronione. Dokument został wygenerowany za pośrednictwem Mobile Data Terminal DOJ.";
 
       const summaryBoxPaddingX = 24;
       const summaryBoxPaddingY = 22;
@@ -729,7 +729,7 @@ export default function ArchivePage() {
 
         doc.setTextColor(255, 255, 255);
         doc.setFontSize(11);
-        doc.text("Los Santos Police Department", baseTextLeft, baseTextTop);
+        doc.text("Department of Justice", baseTextLeft, baseTextTop);
         doc.setFontSize(10);
         doc.text(nowDisplay, pageWidth - marginX, baseTextTop, { align: "right" });
 
@@ -737,7 +737,7 @@ export default function ArchivePage() {
           doc.setFontSize(20);
           doc.text("Raport Czynności Służbowych", baseTextLeft, baseTextTop + 22);
           doc.setFontSize(12);
-          doc.text("Jednostka: LSPD", baseTextLeft, baseTextTop + 40);
+          doc.text("Jednostka: DOJ", baseTextLeft, baseTextTop + 40);
         } else {
           doc.setFontSize(13);
           doc.text("Raport Czynności Służbowych", baseTextLeft, baseTextTop + 20);
@@ -1016,7 +1016,7 @@ export default function ArchivePage() {
       <AuthGate>
         <>
           <Head>
-            <title>LSPD 77RP — Archiwum</title>
+            <title>DOJ 77RP — Archiwum</title>
           </Head>
           <Nav showSidebars={false} />
           <DashboardLayout
@@ -1033,7 +1033,7 @@ export default function ArchivePage() {
     <AuthGate>
       <>
         <Head>
-          <title>LSPD 77RP — Archiwum</title>
+          <title>DOJ 77RP — Archiwum</title>
         </Head>
         <Nav showSidebars={false} />
         <DashboardLayout

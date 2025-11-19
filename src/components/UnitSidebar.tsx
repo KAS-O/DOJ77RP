@@ -94,7 +94,6 @@ export default function UnitSidebar({
   const { prompt, alert, confirm } = useDialog();
   const [uploadState, setUploadState] = useState<UploadState>("idle");
   const [ticketSaving, setTicketSaving] = useState(false);
-  const [missingIcons, setMissingIcons] = useState<Record<string, boolean>>({});
 
   const accessibleSections = useMemo(() => {
     return UNIT_SECTIONS.filter((section) =>
@@ -298,7 +297,7 @@ export default function UnitSidebar({
   }
 
   const unitsPanel = (
-    <div className="rounded-3xl border border-white/10 bg-[var(--card)]/90 p-5 shadow-[0_24px_48px_-24px_rgba(59,130,246,0.55)] backdrop-blur">
+    <div className="rounded-3xl border border-white/10 bg-[var(--card)]/90 p-5 shadow-[0_24px_48px_-24px_rgba(138,92,52,0.55)] backdrop-blur">
       <div className="flex items-center justify-between gap-3">
         <div>
           <h2 className="text-sm font-semibold uppercase tracking-wide text-white/80">Twoje jednostki</h2>
@@ -312,39 +311,26 @@ export default function UnitSidebar({
         {accessibleSections.length > 0 ? (
           accessibleSections.map((section) => {
             const isActive = currentPath === section.href || currentPath.startsWith(`${section.href}/`);
-            const showIcon = section.icon && !missingIcons[section.unit];
             return (
               <Link
                 key={section.href}
                 href={section.href}
                 className={`group relative overflow-hidden rounded-2xl border border-white/10 p-4 transition-all ${
-                  isActive ? "border-white/40 shadow-[0_16px_32px_-24px_rgba(59,130,246,0.7)]" : "hover:-translate-y-1"
+                  isActive ? "border-white/40 shadow-[0_16px_32px_-24px_rgba(171,123,82,0.65)]" : "hover:-translate-y-1"
                 }`}
                 style={{
-                  background: `linear-gradient(135deg, ${section.navColor}33, rgba(8,18,36,0.85))`,
+                  background: `linear-gradient(135deg, ${section.navColor}33, rgba(18,10,6,0.88))`,
                 }}
               >
                 <div className="flex items-center gap-3">
                   <div
-                    className="relative flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-white/10 bg-black/30"
-                    style={{ boxShadow: isActive ? `0 12px 24px -18px ${section.navColor}` : undefined }}
+                    className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl border border-white/10 text-sm font-semibold uppercase tracking-wide text-white/90"
+                    style={{
+                      background: `linear-gradient(145deg, ${section.navColor}, rgba(12,8,5,0.85))`,
+                      boxShadow: isActive ? `0 12px 24px -18px ${section.navColor}` : undefined,
+                    }}
                   >
-                    {showIcon ? (
-                      <img
-                        src={section.icon}
-                        alt={`Logo jednostki ${section.label}`}
-                        className="h-full w-full object-cover"
-                        onError={() =>
-                          setMissingIcons((prev) =>
-                            prev[section.unit] ? prev : { ...prev, [section.unit]: true }
-                          )
-                        }
-                      />
-                    ) : (
-                      <span className="text-sm font-semibold uppercase tracking-wide text-white">
-                        {section.shortLabel}
-                      </span>
-                    )}
+                    {section.shortLabel}
                   </div>
                   <div className="flex flex-col">
                     <span className="text-sm font-semibold text-white">{section.label}</span>
@@ -364,7 +350,7 @@ export default function UnitSidebar({
   );
 
   const profilePanel = (
-    <div className="rounded-3xl border border-white/10 bg-[var(--card)]/90 p-6 shadow-[0_24px_48px_-24px_rgba(14,165,233,0.45)] backdrop-blur">
+    <div className="rounded-3xl border border-white/10 bg-[var(--card)]/90 p-6 shadow-[0_24px_48px_-24px_rgba(186,124,72,0.45)] backdrop-blur">
       <div className="flex items-start gap-4">
         <div className="flex flex-col items-center gap-3">
           {photoURL ? (
@@ -409,41 +395,29 @@ export default function UnitSidebar({
 
           <div className="flex flex-wrap gap-2">
             {membershipUnits.length > 0 ? (
-              membershipUnits.map(({ option, section }) => {
-                const showIcon = !!(section && section.icon && !missingIcons[section.unit]);
-                return (
-                  <span
-                    key={option.value}
-                    className="inline-flex items-center gap-2 rounded-full border px-3 py-1 text-[11px] font-semibold uppercase tracking-wide"
-                    style={{
-                      background: option.background,
-                      color: option.color,
-                      borderColor: option.borderColor,
-                    }}
-                  >
-                    {showIcon && section ? (
-                      <img
-                        src={section.icon}
-                        alt={`Logo jednostki ${option.label}`}
-                        className="h-4 w-4 rounded-full object-cover"
-                        onError={() =>
-                          section &&
-                          setMissingIcons((prev) =>
-                            prev[section.unit] ? prev : { ...prev, [section.unit]: true }
-                          )
-                        }
-                      />
-                    ) : null}
-                    <span>{option.shortLabel || option.abbreviation}</span>
+              membershipUnits.map(({ option, section }) => (
+                <span
+                  key={option.value}
+                  className="inline-flex items-center gap-2 rounded-full border px-3 py-1 text-[11px] font-semibold uppercase tracking-wide"
+                  style={{
+                    background: option.background,
+                    color: option.color,
+                    borderColor: option.borderColor,
+                  }}
+                >
+                  <span className="text-[10px] tracking-[0.2em]">
+                    {section?.shortLabel || option.shortLabel || option.abbreviation}
                   </span>
-                );
-              })
+                  <span>{option.label}</span>
+                </span>
+              ))
             ) : (
               <span className="rounded-full border border-white/10 px-3 py-1 text-[11px] uppercase tracking-wide text-white/60">
                 Brak przypisania do jednostki
               </span>
             )}
           </div>
+
         </div>
       </div>
 
