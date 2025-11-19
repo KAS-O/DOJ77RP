@@ -81,16 +81,16 @@ const RECORD_LABELS: Record<string, string> = {
 };
 
 const RECORD_COLORS: Record<string, string> = {
-  note: "#7c3aed",
-  weapon: "#ef4444",
-  drug: "#10b981",
-  explosive: "#f97316",
-  member: "#6366f1",
-  vehicle: "#0ea5e9",
-  "group-link": "#facc15",
+  note: "#c8a873",
+  weapon: "#7a4a2c",
+  drug: "#5b3a22",
+  explosive: "#a46332",
+  member: "#8d623b",
+  vehicle: "#b6854e",
+  "group-link": "#d7b57a",
 };
 
-const CONTROLLED_COLOR = "#fb923c";
+const CONTROLLED_COLOR = "#d08f54";
 
 const ACTIVE_FORM_TITLES: Record<Exclude<ActiveFormType, null>, string> = {
   note: "Dodaj notatkę",
@@ -193,7 +193,7 @@ function AttachmentPreview({
       href={attachment.url}
       target="_blank"
       rel="noreferrer"
-      className="inline-flex items-center gap-2 text-sm underline text-blue-200"
+      className="inline-flex items-center gap-2 text-sm underline text-beige-900"
       onClick={onOpen}
     >
       📎 {attachment.name || "Pobierz załącznik"}
@@ -1820,7 +1820,7 @@ export default function DossierPage() {
             {record.dossierId ? (
               <a
                 href={`/dossiers/${record.dossierId}`}
-                className="underline text-blue-200"
+                className="underline text-beige-900"
               >
                 Przejdź do teczki
               </a>
@@ -1842,7 +1842,7 @@ export default function DossierPage() {
             {record.vehicleId ? (
               <a
                 href={`/vehicle-archive/${record.vehicleId}`}
-                className="underline text-blue-200"
+                className="underline text-beige-900"
                 onClick={() => {
                   if (!session) return;
                   void logActivity({
@@ -1865,7 +1865,7 @@ export default function DossierPage() {
             <div className="flex flex-wrap items-center gap-2">
               <span>Organizacja:</span>
               {record.linkedGroupId ? (
-                <a href={`/criminal-groups/${record.linkedGroupId}`} className="underline text-blue-200">
+                <a href={`/criminal-groups/${record.linkedGroupId}`} className="underline text-beige-900">
                   {record.linkedGroupName || "—"}
                 </a>
               ) : (
@@ -2121,7 +2121,10 @@ export default function DossierPage() {
                                 <div className="text-xs text-white/70 mt-2 leading-relaxed">Cechy: {member.traits}</div>
                               ) : null}
                               {member.dossierId ? (
-                                <a href={`/dossiers/${member.dossierId}`} className="text-xs underline text-blue-100 mt-2 inline-block">
+                                <a
+                                  href={`/dossiers/${member.dossierId}`}
+                                  className="text-xs underline text-beige-900 mt-2 inline-block"
+                                >
                                   Przejdź do teczki
                                 </a>
                               ) : null}

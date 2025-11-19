@@ -37,7 +37,7 @@ export default function Dossiers() {
   const { confirm, alert } = useDialog();
   const { logActivity, session } = useSessionActivity();
   const { writeLog } = useLogWriter();
-  const accentPalette = ["#a855f7", "#38bdf8", "#f97316", "#22c55e", "#ef4444", "#eab308"];
+  const accentPalette = ["#2f1b11", "#5c3b22", "#8a6d45", "#b48c60", "#d8bf9a", "#1a120b"];
 
   useEffect(() => {
     const q = query(collection(db, "dossiers"), orderBy("createdAt", "desc"));
@@ -185,7 +185,7 @@ export default function Dossiers() {
                 <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
                   <div className="space-y-2">
                     <span className="section-chip">
-                      <span className="section-chip__dot" style={{ background: "#a855f7" }} />
+                      <span className="section-chip__dot" style={{ background: "#8a6d45" }} />
                       Teczki
                     </span>
                     <div>
@@ -204,8 +204,12 @@ export default function Dossiers() {
                     />
                   </div>
                 </div>
-                {err && <div className="card p-3 bg-red-50 text-red-700 mb-3">{err}</div>}
-                {ok && <div className="card p-3 bg-green-50 text-green-700 mb-3">{ok}</div>}
+                {err && (
+                  <div className="card p-3 mb-3 border border-red-900/40 bg-[#2a1410] text-beige-900">{err}</div>
+                )}
+                {ok && (
+                  <div className="card p-3 mb-3 border border-beige-900/30 bg-[#1a120b] text-beige-900">{ok}</div>
+                )}
                 <div className="grid gap-3">
                   <h2 className="text-xs uppercase tracking-[0.3em] text-beige-100/60">Teczki osób</h2>
                   {filtered.map((d, index) => {
@@ -242,7 +246,7 @@ export default function Dossiers() {
                           </div>
                           {canManageDossiers && (
                             <button
-                              className="btn bg-red-700 text-white w-full md:w-auto"
+                              className="btn bg-red-900 text-white w-full md:w-auto"
                               onClick={(e) => {
                                 e.preventDefault();
                                 e.stopPropagation();

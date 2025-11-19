@@ -900,8 +900,8 @@ select option {
   opacity: 0.7;
 }
 
-.underlight-ambient__blue,
-.underlight-ambient__red {
+.underlight-ambient__left,
+.underlight-ambient__right {
   position: absolute;
   bottom: -36%;
   width: 68vw;
@@ -912,16 +912,16 @@ select option {
   will-change: transform, opacity;
 }
 
-.underlight-ambient__blue {
+.underlight-ambient__left {
   left: 8%;
   background: radial-gradient(circle, rgba(212, 168, 110, 1), rgba(109, 72, 40, 0.75) 45%, transparent 80%);
-  animation: underlightBlue 6.9s ease-in-out infinite alternate;
+  animation: underlightLeft 6.9s ease-in-out infinite alternate;
 }
 
-.underlight-ambient__red {
+.underlight-ambient__right {
   right: 8%;
   background: radial-gradient(circle, rgba(92, 56, 32, 1), rgba(37, 21, 12, 0.7) 45%, transparent 80%);
-  animation: underlightRed 7.7s ease-in-out infinite alternate;
+  animation: underlightRight 7.7s ease-in-out infinite alternate;
 }
 
 @keyframes underlightDrift {
@@ -939,7 +939,7 @@ select option {
   }
 }
 
-@keyframes underlightBlue {
+@keyframes underlightLeft {
   0% {
     transform: translate(-10%, 6%) scale(0.96);
     opacity: 0.56;
@@ -954,7 +954,7 @@ select option {
   }
 }
 
-@keyframes underlightRed {
+@keyframes underlightRight {
   0% {
     transform: translate(10%, -4%) scale(0.95);
     opacity: 0.52;
@@ -971,8 +971,8 @@ select option {
 
 @media (prefers-reduced-motion: reduce) {
   .underlight-ambient,
-  .underlight-ambient__blue,
-  .underlight-ambient__red {
+  .underlight-ambient__left,
+  .underlight-ambient__right {
     animation-duration: 1ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0ms !important;

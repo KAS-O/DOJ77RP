@@ -18,22 +18,22 @@ const BASE_UNIT_CONFIG: Record<
 > = {
   irs: {
     navColor: "#b77d4b",
-    rankHierarchy: ["irs-koordynator", "irs-inspektor"],
+    rankHierarchy: [],
     membershipRank: null,
   },
   sadownictwo: {
     navColor: "#8d6946",
-    rankHierarchy: ["sadownictwo-przewodniczacy", "sadownictwo-sedzia"],
+    rankHierarchy: [],
     membershipRank: null,
   },
   prokuratura: {
     navColor: "#9b6a3c",
-    rankHierarchy: ["prokuratura-naczelnik", "prokuratura-prokurator"],
+    rankHierarchy: [],
     membershipRank: null,
   },
   palestra: {
     navColor: "#c48c5c",
-    rankHierarchy: ["palestra-dziekan", "palestra-rzecznik"],
+    rankHierarchy: [],
     membershipRank: null,
   },
 };
@@ -60,36 +60,18 @@ export function getUnitSection(unit: InternalUnit): UnitSectionConfig | null {
 }
 
 export function unitHasAccess(
-  unit: InternalUnit,
-  ranks: AdditionalRank[] | null | undefined,
-  role?: Role | null | undefined,
-  memberships?: InternalUnit[] | null | undefined,
-  adminPrivileges = false
+  _unit: InternalUnit,
+  _ranks: AdditionalRank[] | null | undefined,
+  _role?: Role | null | undefined,
+  _memberships?: InternalUnit[] | null | undefined,
+  _adminPrivileges = false
 ): boolean {
-  if (adminPrivileges || isHighCommand(role)) {
-    return true;
-  }
-  const membershipList = Array.isArray(memberships) ? memberships : [];
-  if (membershipList.includes(unit)) {
-    return true;
-  }
-  const config = UNIT_CONFIG_MAP.get(unit);
-  if (!config) {
-    return false;
-  }
-  const rankSet = new Set(ranks);
-  if (config.membershipRank && rankSet.has(config.membershipRank)) {
-    return true;
-  }
-  if (!rankSet.size) {
-    return false;
-  }
-  return config.rankHierarchy.some((rank) => rankSet.has(rank));
+  return true;
 }
 
 export type UnitPermission = {
   unit: InternalUnit;
-  highestRank: AdditionalRank;
+  highestRank: AdditionalRank | null;
   manageableRanks: AdditionalRank[];
 };
 

@@ -15,8 +15,8 @@ export function UnderlightGlow() {
 
   const glow = (
     <div className="underlight-ambient" aria-hidden="true">
-      <span className="underlight-ambient__blue" />
-      <span className="underlight-ambient__red" />
+      <span className="underlight-ambient__left" />
+      <span className="underlight-ambient__right" />
     </div>
   );
 

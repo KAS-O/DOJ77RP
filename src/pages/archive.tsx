@@ -1044,7 +1044,7 @@ export default function ArchivePage() {
                 <div className="flex flex-col gap-4 xl:flex-row xl:items-center">
                   <div className="space-y-1 flex-1 min-w-[min(320px,100%)]">
                     <span className="section-chip">
-                      <span className="section-chip__dot" style={{ background: "#f59e0b" }} />
+                      <span className="section-chip__dot" style={{ background: "#8a6d45" }} />
                       Archiwum
                     </span>
                     <h1 className="text-3xl font-semibold tracking-tight">Archiwum dokumentów służbowych</h1>
@@ -1060,7 +1060,7 @@ export default function ArchivePage() {
                       Resetuj filtry
                     </button>
                     <button
-                      className={`btn ${selectionMode ? "bg-blue-800 text-white" : ""}`}
+                      className={`btn ${selectionMode ? "bg-beige-700 text-black" : ""}`}
                       type="button"
                       onClick={toggleSelectionMode}
                     >
@@ -1068,7 +1068,7 @@ export default function ArchivePage() {
                     </button>
                     {selectionMode && (
                       <button
-                        className="btn bg-green-600 text-white"
+                        className="btn bg-beige-800 text-black"
                         type="button"
                         disabled={selectedCount === 0 || creatingReport}
                         onClick={createReport}
@@ -1139,7 +1139,7 @@ export default function ArchivePage() {
                   <div
                     key={item.id}
                     className={`card relative p-4 grid md:grid-cols-[1fr_auto] gap-3 transition-all ${
-                      isSelected ? "ring-2 ring-blue-400/80" : ""
+                      isSelected ? "ring-2 ring-beige-800/70" : ""
                     }`}
                   >
                     {selectionMode && (
@@ -1147,7 +1147,7 @@ export default function ArchivePage() {
                         type="button"
                         onClick={() => toggleSelected(item.id)}
                         className={`absolute top-3 right-3 flex h-6 w-6 items-center justify-center rounded-full border border-white/40 transition ${
-                          isSelected ? "bg-blue-500/80 border-blue-200" : "bg-black/30"
+                          isSelected ? "bg-beige-700/80 border-beige-900/60" : "bg-black/30"
                         }`}
                         aria-pressed={isSelected}
                       >
@@ -1193,7 +1193,7 @@ export default function ArchivePage() {
                           {imageLinks.map((url, index) => (
                             <a
                               key={`${item.id}-image-${index}`}
-                              className="text-blue-700 underline"
+                              className="text-beige-900 underline"
                               href={url}
                               target="_blank"
                               rel="noreferrer"
@@ -1211,7 +1211,7 @@ export default function ArchivePage() {
 
                     <div className="flex items-center justify-end gap-2">
                       {can.deleteArchive(role, adminPrivileges) && !selectionMode && (
-                        <button className="btn bg-red-700 text-white" onClick={() => remove(item.id)}>
+                        <button className="btn bg-red-900 text-white" onClick={() => remove(item.id)}>
                           Usuń
                         </button>
                       )}

@@ -62,10 +62,7 @@ async function ensureUnitAccess(req: NextApiRequest, unit: InternalUnit) {
     if (!config) {
       throw Object.assign(new Error("Jednostka nie obsługuje uprawnień."), { status: 404 });
     }
-    if (!config.rankHierarchy.length && !config.membershipRank) {
-      throw Object.assign(new Error("Brak konfiguracji rang jednostki."), { status: 500 });
-    }
-    const highestRank = config.rankHierarchy[0] ?? config.membershipRank!;
+    const highestRank = config.rankHierarchy[0] ?? config.membershipRank ?? null;
     const manageableRanks = config.rankHierarchy.slice();
     if (config.membershipRank && !manageableRanks.includes(config.membershipRank)) {
       manageableRanks.push(config.membershipRank);

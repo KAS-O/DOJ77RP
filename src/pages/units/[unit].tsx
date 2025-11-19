@@ -25,12 +25,7 @@ import {
   type InternalUnit,
 } from "@/lib/hr";
 import { ROLE_LABELS, type Role, isHighCommand } from "@/lib/roles";
-import {
-  getUnitSection,
-  resolveUnitPermission,
-  formatManageableRankList,
-  type UnitSectionConfig,
-} from "@/lib/internalUnits";
+import { getUnitSection, resolveUnitPermission, type UnitSectionConfig } from "@/lib/internalUnits";
 import { collection, deleteDoc, doc, getDoc, onSnapshot, query, serverTimestamp, setDoc, where } from "firebase/firestore";
 
 const CHIP_CLASS =
@@ -89,8 +84,8 @@ type NewCriminalGroupInput = {
 
 const DEFAULT_CRIMINAL_GROUP_TEMPLATE = {
   name: "Ballas",
-  colorName: "Fioletowa",
-  colorHex: "#7c3aed",
+  colorName: "Brązowa",
+  colorHex: "#8b5e34",
   organizationType: "Gang uliczny",
   base: "Grove Street",
   operations:
@@ -209,7 +204,7 @@ function MemberRow({ member, unit, manageableRanks, membershipRank, onSubmit, sa
           <label className="flex items-center gap-2">
             <input
               type="checkbox"
-              className="accent-blue-400"
+              className="accent-[#d4b08a]"
               checked={membership}
               onChange={(e) => setMembership(e.target.checked)}
               disabled={saving}
@@ -266,7 +261,7 @@ function MemberRow({ member, unit, manageableRanks, membershipRank, onSubmit, sa
             <label key={option.value} className="flex items-center gap-2">
               <input
                 type="checkbox"
-                className="accent-blue-400"
+                className="accent-[#d4b08a]"
                 checked={sortedSelectedRanks.includes(option.value)}
                 onChange={() => toggleRank(option.value)}
                 disabled={saving || !membership}
@@ -323,7 +318,7 @@ export default function UnitPanelPage() {
     name: "",
     title: "",
     colorName: "",
-    colorHex: "#7c3aed",
+    colorHex: "#8b5e34",
     organizationType: "",
     base: "",
     operations: "",
@@ -333,7 +328,6 @@ export default function UnitPanelPage() {
   const [addMemberOpen, setAddMemberOpen] = useState(false);
   const [candidateSearch, setCandidateSearch] = useState("");
   const [selectedCandidate, setSelectedCandidate] = useState<string>("");
-  const [candidateRanks, setCandidateRanks] = useState<AdditionalRank[]>([]);
   const [addingMember, setAddingMember] = useState(false);
   const [addMemberError, setAddMemberError] = useState<string | null>(null);
 
@@ -358,21 +352,10 @@ export default function UnitPanelPage() {
     if (!section || (!adminPrivileges && !isHighCommand(role))) {
       return null;
     }
-    if (section.rankHierarchy.length === 0) {
-      if (!section.membershipRank) {
-        return null;
-      }
-      return { unit: section.unit, highestRank: section.membershipRank, manageableRanks: [] };
-    }
-    const [highestRank, ...rest] = section.rankHierarchy;
-    const manageableRanks = [...rest];
-    if (section.membershipRank) {
-      manageableRanks.push(section.membershipRank);
-    }
     return {
       unit: section.unit,
-      highestRank,
-      manageableRanks,
+      highestRank: section.rankHierarchy[0] ?? section.membershipRank ?? null,
+      manageableRanks: section.rankHierarchy.slice(),
     };
   }, [adminPrivileges, permission, role, section]);
 
@@ -527,13 +510,6 @@ export default function UnitPanelPage() {
     () => (managementPermission ? managementPermission.manageableRanks : []),
     [managementPermission]
   );
-  const manageableRankOptions = useMemo(
-    () =>
-      manageableRanks
-        .map((rank) => getAdditionalRankOption(rank))
-        .filter((option): option is NonNullable<ReturnType<typeof getAdditionalRankOption>> => !!option),
-    [manageableRanks]
-  );
 
   const candidateMembers = useMemo(() => {
     if (!unit) return [] as UnitMember[];
@@ -555,17 +531,8 @@ export default function UnitPanelPage() {
     });
   }, [candidateMembers, candidateSearch]);
 
-  const highestRankOption = managementPermission ? getAdditionalRankOption(managementPermission.highestRank) : null;
-  const manageableList = managementPermission ? formatManageableRankList(managementPermission.manageableRanks) : "";
-
   const accessMessage = managementPermission
-    ? managementPermission.manageableRanks.length
-      ? `Jako ${highestRankOption?.label || "opiekun"} możesz zarządzać członkostwem w ${
-          section?.shortLabel || "jednostce"
-        } oraz rangami: ${manageableList}.`
-      : `Jako ${highestRankOption?.label || "opiekun"} możesz zarządzać członkostwem w ${
-          section?.shortLabel || "jednostce"
-        }.`
+    ? `Masz uprawnienia do zarządzania członkostwem w ${section?.shortLabel || "tej jednostce"}.`
     : "Brak uprawnień do zarządzania tą jednostką.";
 
   const sortedCriminalGroups = useMemo(() => {
@@ -699,47 +666,22 @@ export default function UnitPanelPage() {
     [canManage, groupForm, groupSaving, supportsCriminalGroups]
   );
 
-  const canAddMembers = canManage && manageableRankOptions.length > 0;
+  const canAddMembers = canManage;
 
   const handleOpenAddMember = useCallback(() => {
     if (!canAddMembers) return;
     setCandidateSearch("");
     setSelectedCandidate("");
-    if (membershipRank) {
-      setCandidateRanks([membershipRank]);
-    } else {
-      setCandidateRanks(manageableRanks.length ? [manageableRanks[manageableRanks.length - 1]] : []);
-    }
     setAddMemberError(null);
     setAddMemberOpen(true);
-  }, [canAddMembers, manageableRanks, membershipRank]);
+  }, [canAddMembers]);
 
   const handleCloseAddMember = useCallback(() => {
     setAddMemberOpen(false);
     setCandidateSearch("");
     setSelectedCandidate("");
-    setCandidateRanks([]);
     setAddMemberError(null);
   }, []);
-
-  const toggleCandidateRank = useCallback(
-    (rank: AdditionalRank) => {
-      setCandidateRanks((prev) => {
-        if (membershipRank && rank === membershipRank) {
-          if (prev.includes(rank)) {
-            return prev;
-          }
-        }
-        if (prev.includes(rank)) {
-          return prev.filter((value) => value !== rank);
-        }
-        const next = [...prev, rank];
-        const set = new Set(next);
-        return manageableRanks.filter((value) => set.has(value));
-      });
-    },
-    [manageableRanks, membershipRank]
-  );
 
   const handleAddMemberSubmit = useCallback(
     async (event: FormEvent<HTMLFormElement>) => {
@@ -749,24 +691,12 @@ export default function UnitPanelPage() {
         setAddMemberError("Wybierz funkcjonariusza.");
         return;
       }
-      let ranksToAssign =
-        candidateRanks.length > 0 ? candidateRanks : manageableRanks.slice(-1);
-      if (membershipRank && !ranksToAssign.includes(membershipRank)) {
-        ranksToAssign = [...ranksToAssign, membershipRank];
-      }
-      const rankSet = new Set(ranksToAssign);
-      const orderedRanks = manageableRanks.filter((value) => rankSet.has(value));
-      if (!orderedRanks.length) {
-        setAddMemberError("Wybierz przynajmniej jedną rangę jednostki.");
-        return;
-      }
       setAddingMember(true);
       setAddMemberError(null);
       try {
-        await handleSubmit(selectedCandidate, { membership: true, ranks: orderedRanks });
+        await handleSubmit(selectedCandidate, { membership: true, ranks: [] });
         setAddMemberOpen(false);
         setSelectedCandidate("");
-        setCandidateRanks([]);
         setCandidateSearch("");
       } catch (error: any) {
         setAddMemberError(error?.message || "Nie udało się dodać funkcjonariusza.");
@@ -774,18 +704,10 @@ export default function UnitPanelPage() {
         setAddingMember(false);
       }
     },
-    [
-      unit,
-      managementPermission,
-      selectedCandidate,
-      candidateRanks,
-      manageableRanks,
-      membershipRank,
-      handleSubmit,
-    ]
+    [unit, managementPermission, selectedCandidate, handleSubmit]
   );
 
-  const candidateSubmitDisabled = !selectedCandidate || candidateRanks.length === 0 || addingMember;
+  const candidateSubmitDisabled = !selectedCandidate || addingMember;
 
   const handleRemoveGroup = useCallback(
     async (group: CriminalGroupRecord) => {
@@ -841,7 +763,7 @@ export default function UnitPanelPage() {
                   <span className="section-chip">
                     <span
                       className="section-chip__dot"
-                      style={{ background: section ? section.navColor : "#38bdf8" }}
+                      style={{ background: section ? section.navColor : "#8a6d45" }}
                       aria-hidden
                     />
                     Panel jednostki
@@ -955,7 +877,7 @@ export default function UnitPanelPage() {
                     <span className="section-chip">
                       <span
                         className="section-chip__dot"
-                        style={{ background: section ? section.navColor : "#38bdf8" }}
+                        style={{ background: section ? section.navColor : "#b48c60" }}
                         aria-hidden
                       />
                       Zarządzanie jednostką
@@ -1024,42 +946,42 @@ export default function UnitPanelPage() {
 
                 {activeTab === "groups" && supportsCriminalGroups && canManage && (
                   <div className="grid gap-6">
-                    <div className="card bg-gradient-to-br from-fuchsia-900/85 via-indigo-900/80 to-slate-900/85 p-6 text-white shadow-xl">
+                    <div className="card bg-gradient-to-br from-[#3e2616]/85 via-[#1b120a]/80 to-[#0b0603]/85 p-6 text-white shadow-xl">
                       <h2 className="text-xl font-semibold">Gang Unit — rejestr organizacji</h2>
                       <p className="text-sm text-white/70">
                         Zarządzaj profilem grup przestępczych obserwowanych przez GU. Dodawaj nowe wpisy i aktualizuj informacje operacyjne.
                       </p>
                     </div>
 
-                <form className="card bg-white/95 p-6 shadow" onSubmit={handleGroupSubmit}>
+                <form className="card p-6 shadow" onSubmit={handleGroupSubmit}>
                   <div className="grid gap-4 md:grid-cols-2">
-                    <label className="grid gap-1 text-sm">
-                      <span className="font-semibold text-slate-700">Nazwa grupy *</span>
+                    <label className="grid gap-1 text-sm text-white/80">
+                      <span className="font-semibold text-white">Nazwa grupy *</span>
                       <input
-                        className="input bg-white"
+                        className="input"
                         value={groupForm.name}
                         onChange={(e) => setGroupForm((prev) => ({ ...prev, name: e.target.value }))}
                         placeholder="np. Vagos"
                         required
                       />
                     </label>
-                    <label className="grid gap-1 text-sm">
-                      <span className="font-semibold text-slate-700">Tytuł (opcjonalnie)</span>
+                    <label className="grid gap-1 text-sm text-white/80">
+                      <span className="font-semibold text-white">Tytuł (opcjonalnie)</span>
                       <input
-                        className="input bg-white"
+                        className="input"
                         value={groupForm.title}
                         onChange={(e) => setGroupForm((prev) => ({ ...prev, title: e.target.value }))}
                         placeholder="np. Organizacja Vagos"
                       />
                     </label>
-                    <label className="grid gap-1 text-sm">
-                      <span className="font-semibold text-slate-700">Kolor (HEX)</span>
+                    <label className="grid gap-1 text-sm text-white/80">
+                      <span className="font-semibold text-white">Kolor (HEX)</span>
                       <div className="flex items-center gap-3">
                         <input
-                          className="input bg-white"
+                          className="input"
                           value={groupForm.colorHex}
                           onChange={(e) => setGroupForm((prev) => ({ ...prev, colorHex: e.target.value }))}
-                          placeholder="#7c3aed"
+                          placeholder="#8b5e34"
                           required
                         />
                         <span
@@ -1069,43 +991,43 @@ export default function UnitPanelPage() {
                               ? groupForm.colorHex.startsWith("#")
                                 ? groupForm.colorHex
                                 : `#${groupForm.colorHex}`
-                              : "#7c3aed",
+                              : "#8b5e34",
                           }}
                         />
                       </div>
                     </label>
-                    <label className="grid gap-1 text-sm">
-                      <span className="font-semibold text-slate-700">Kolorystyka</span>
+                    <label className="grid gap-1 text-sm text-white/80">
+                      <span className="font-semibold text-white">Kolorystyka</span>
                       <input
-                        className="input bg-white"
+                        className="input"
                         value={groupForm.colorName}
                         onChange={(e) => setGroupForm((prev) => ({ ...prev, colorName: e.target.value }))}
                         placeholder="np. Żółto-zielona"
                       />
                     </label>
-                    <label className="grid gap-1 text-sm">
-                      <span className="font-semibold text-slate-700">Typ organizacji *</span>
+                    <label className="grid gap-1 text-sm text-white/80">
+                      <span className="font-semibold text-white">Typ organizacji *</span>
                       <input
-                        className="input bg-white"
+                        className="input"
                         value={groupForm.organizationType}
                         onChange={(e) => setGroupForm((prev) => ({ ...prev, organizationType: e.target.value }))}
                         placeholder="np. Kartel"
                         required
                       />
                     </label>
-                    <label className="grid gap-1 text-sm">
-                      <span className="font-semibold text-slate-700">Główna baza</span>
+                    <label className="grid gap-1 text-sm text-white/80">
+                      <span className="font-semibold text-white">Główna baza</span>
                       <input
-                        className="input bg-white"
+                        className="input"
                         value={groupForm.base}
                         onChange={(e) => setGroupForm((prev) => ({ ...prev, base: e.target.value }))}
                         placeholder="np. Mirror Park"
                       />
                     </label>
-                    <label className="grid gap-1 text-sm md:col-span-2">
-                      <span className="font-semibold text-slate-700">Zakres działalności</span>
+                    <label className="grid gap-1 text-sm text-white/80 md:col-span-2">
+                      <span className="font-semibold text-white">Zakres działalności</span>
                       <textarea
-                        className="input h-24 bg-white"
+                        className="input h-24"
                         value={groupForm.operations}
                         onChange={(e) => setGroupForm((prev) => ({ ...prev, operations: e.target.value }))}
                         placeholder="np. Narkotyki, wymuszenia, porwania"
@@ -1117,13 +1039,9 @@ export default function UnitPanelPage() {
                       {groupFormError}
                     </div>
                   )}
-                  <div className="mt-4 flex items-center justify-between gap-3">
-                    <span className="text-xs text-slate-500">Pola oznaczone * są wymagane.</span>
-                    <button
-                      type="submit"
-                      className="btn bg-indigo-600 text-white hover:bg-indigo-500 disabled:opacity-60"
-                      disabled={groupSaving}
-                    >
+                  <div className="mt-4 flex items-center justify-between gap-3 text-xs text-white/60">
+                    <span>Pola oznaczone * są wymagane.</span>
+                    <button type="submit" className="btn btn--small" disabled={groupSaving}>
                       {groupSaving ? "Zapisywanie..." : "Dodaj grupę"}
                     </button>
                   </div>
@@ -1257,7 +1175,7 @@ export default function UnitPanelPage() {
                             >
                               <input
                                 type="radio"
-                                className="accent-blue-400"
+                                className="accent-[#d4b08a]"
                                 name="candidate"
                                 value={candidate.uid}
                                 checked={selectedCandidate === candidate.uid}
@@ -1277,29 +1195,10 @@ export default function UnitPanelPage() {
                   </div>
 
                   <div className="space-y-2">
-                    <span className="text-sm font-semibold text-white">Rangi jednostki</span>
-                    {manageableRankOptions.length === 0 ? (
-                      <div className="rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-xs text-white/60">
-                        Brak rang do przypisania — skontaktuj się z przełożonym.
-                      </div>
-                    ) : (
-                      <div className="flex flex-wrap gap-3 text-sm text-white/80">
-                        {manageableRankOptions.map((option) => (
-                          <label
-                            key={option.value}
-                            className="flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3 py-1"
-                          >
-                            <input
-                              type="checkbox"
-                              className="accent-blue-400"
-                              checked={candidateRanks.includes(option.value)}
-                              onChange={() => toggleCandidateRank(option.value)}
-                            />
-                            {option.label}
-                          </label>
-                        ))}
-                      </div>
-                    )}
+                    <span className="text-sm font-semibold text-white">Członkostwo</span>
+                    <div className="rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-xs text-white/60">
+                      Wybrany funkcjonariusz otrzyma dostęp do tej jednostki natychmiast po zatwierdzeniu.
+                    </div>
                   </div>
 
                   {addMemberError && (

@@ -36,13 +36,11 @@ import { ROLE_LABELS, ROLE_OPTIONS, ROLE_VALUES, DEFAULT_ROLE, normalizeRole, ca
 import {
   DEPARTMENTS,
   INTERNAL_UNITS,
-  ADDITIONAL_RANK_GROUPS,
   type Department,
   type InternalUnit,
   type AdditionalRank,
   getDepartmentOption,
   getInternalUnitOption,
-  getAdditionalRankOption,
   normalizeDepartment,
   normalizeInternalUnits,
   normalizeAdditionalRanks,
@@ -237,31 +235,31 @@ const ADMIN_SECTION_META: Record<
     label: "Podsumowanie",
     description: "Statystyki i finanse",
     icon: "📊",
-    accent: "#38bdf8",
+    accent: "#8a6d45",
   },
   hr: {
     label: "Dział Kadr",
     description: "Kontrola kont i rang",
     icon: "🛡️",
-    accent: "#6366f1",
+    accent: "#5c3b22",
   },
   announcements: {
     label: "Ogłoszenia",
     description: "Komunikaty dla funkcjonariuszy",
     icon: "📣",
-    accent: "#f59e0b",
+    accent: "#b48c60",
   },
   tickets: {
     label: "Tickety",
     description: "Zgłoszenia od funkcjonariuszy",
     icon: "🎟️",
-    accent: "#34d399",
+    accent: "#2f1b11",
   },
   logs: {
     label: "Logi",
     description: "Aktywność kont",
     icon: "🗂️",
-    accent: "#38bdf8",
+    accent: "#1f140c",
   },
 };
 
@@ -843,7 +841,7 @@ export default function Admin() {
         }
       const departmentValue = normalizeDepartment(data?.department);
       const unitsValue = normalizeInternalUnits(data?.units);
-      const additionalRanksValue = normalizeAdditionalRanks(data?.additionalRanks ?? data?.additionalRank);
+      const additionalRanksValue: AdditionalRank[] = [];
       return {
         uid,
         login,
@@ -917,7 +915,7 @@ export default function Admin() {
     const unitsValue = Array.isArray(editorState.account.units)
       ? editorState.account.units.filter((unit): unit is InternalUnit => !!getInternalUnitOption(unit))
       : [];
-    const additionalRanksValue = normalizeAdditionalRanks(editorState.account.additionalRanks);
+    const additionalRanksValue: AdditionalRank[] = [];
 
     if (!loginValue) {
       setErr("Login jest wymagany.");
@@ -950,19 +948,6 @@ export default function Admin() {
       setErr("Wybierz departament dla funkcjonariusza.");
       return;
     }
-    for (const rank of additionalRanksValue) {
-      const rankOption = getAdditionalRankOption(rank);
-      if (rankOption && !unitsValue.includes(rankOption.unit)) {
-        const unitOption = getInternalUnitOption(rankOption.unit);
-        setErr(
-          unitOption
-            ? `Aby przypisać stopień ${rankOption.label}, dodaj jednostkę ${unitOption.abbreviation}.`
-            : "Aby przypisać dodatkowy stopień, wybierz powiązaną jednostkę."
-        );
-        return;
-      }
-    }
-
     try {
       setAccountSaving(true);
       setErr(null);
@@ -978,8 +963,6 @@ export default function Admin() {
               password: passwordValue,
               department: departmentValue,
               units: unitsValue,
-              additionalRanks: additionalRanksValue,
-              additionalRank: additionalRanksValue[0] ?? null,
               adminPrivileges: !!editorState.account.adminPrivileges,
             }
           : {
@@ -988,8 +971,6 @@ export default function Admin() {
               role: roleValue,
               department: departmentValue,
               units: unitsValue,
-              additionalRanks: additionalRanksValue,
-              additionalRank: additionalRanksValue[0] ?? null,
               adminPrivileges: editorState.account.adminPrivileges,
             };
       const res = await fetch("/api/admin/accounts", {
@@ -1126,20 +1107,11 @@ export default function Admin() {
         const unitLabels = acc.units
           .map((unit) => getInternalUnitOption(unit)?.abbreviation || "")
           .map((label) => label.toLowerCase());
-        const additionalRankLabels = (Array.isArray(acc.additionalRanks) && acc.additionalRanks.length
-          ? acc.additionalRanks
-          : acc.additionalRank
-          ? [acc.additionalRank]
-          : [])
-          .map((rank) => getAdditionalRankOption(rank)?.label || "")
-          .map((label) => label.toLowerCase())
-          .filter(Boolean);
         return (
           acc.login.toLowerCase().includes(phrase) ||
           fullName.includes(phrase) ||
           (departmentLabel ? departmentLabel.includes(phrase) : false) ||
-          unitLabels.some((label) => label.includes(phrase)) ||
-          additionalRankLabels.some((label) => label.includes(phrase))
+          unitLabels.some((label) => label.includes(phrase))
         );
       })
       .slice();
@@ -1821,7 +1793,7 @@ export default function Admin() {
               <div className="flex flex-col gap-6">
               {err && <div className="card p-3 bg-red-50 text-red-700">{err}</div>}
 
-              <div className="rounded-3xl border border-white/60 bg-white/70 px-6 py-6 shadow-sm backdrop-blur">
+              <div className="rounded-3xl border border-white/20 bg-[var(--card)]/85 px-6 py-6 shadow-sm backdrop-blur">
                 <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
                   <div className="space-y-2">
                     <span className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.3em] text-slate-500">
@@ -1892,11 +1864,11 @@ export default function Admin() {
                 </div>
 
                 <div className="grid gap-4 sm:grid-cols-2">
-                  <div className="card p-4 bg-white/70">
+                <div className="card p-4">
                     <div className="text-sm text-beige-700">Liczba mandatów</div>
                     <div className="text-3xl font-bold">{mandaty}</div>
                   </div>
-                  <div className="card p-4 bg-white/70">
+                <div className="card p-4">
                     <div className="text-sm text-beige-700">Areszty</div>
                     <div className="text-3xl font-bold">{areszty}</div>
                   </div>
@@ -1968,15 +1940,15 @@ export default function Admin() {
                   </div>
 
                   <div className="grid md:grid-cols-3 gap-4">
-                    <div className="card p-4 bg-white/70">
+                    <div className="card p-4">
                       <div className="text-sm text-beige-700">Mandaty</div>
                       <div className="text-2xl font-bold">{pStats.m}</div>
                     </div>
-                    <div className="card p-4 bg-white/70">
+                    <div className="card p-4">
                       <div className="text-sm text-beige-700">Areszty</div>
                       <div className="text-2xl font-bold">{pStats.a}</div>
                     </div>
-                    <div className="card p-4 bg-white/70">
+                    <div className="card p-4">
                       <div className="text-sm text-beige-700">Przychód dla DPS</div>
                       <div className="text-2xl font-bold">${pStats.income.toFixed(2)}</div>
                     </div>
@@ -1987,7 +1959,7 @@ export default function Admin() {
 
             {section === "hr" && (
               <div className="grid gap-5">
-                <div className="card bg-gradient-to-br from-sky-900/85 via-indigo-900/80 to-purple-900/80 text-white p-6 shadow-xl">
+                <div className="card bg-gradient-to-br from-[#3d291a]/85 via-[#1a120a]/80 to-[#0b0603]/85 text-white p-6 shadow-xl">
                   <div className="flex flex-wrap items-start gap-3">
                     <div className="flex-1">
                       <h2 className="admin-section-title text-white">Dział Kadr</h2>
@@ -2003,13 +1975,13 @@ export default function Admin() {
                   </div>
                   <div className="mt-4 flex flex-wrap items-center gap-3">
                     <input
-                      className="input w-full md:w-72 bg-white text-black placeholder:text-slate-500"
+                      className="input w-full md:w-72"
                       placeholder="Szukaj po loginie, imieniu lub przypisaniach..."
                       value={accountSearch}
                       onChange={(e) => setAccountSearch(e.target.value)}
                     />
                     <select
-                      className="input w-full md:w-56 bg-white text-black"
+                      className="input w-full md:w-56"
                       value={accountRoleFilter}
                       onChange={(e) => setAccountRoleFilter(e.target.value as Role | "")}
                     >
@@ -2037,14 +2009,6 @@ export default function Admin() {
                         .filter(
                           (option): option is NonNullable<ReturnType<typeof getInternalUnitOption>> => !!option
                         );
-                      const additionalRankOptions = (Array.isArray(acc.additionalRanks) && acc.additionalRanks.length
-                        ? acc.additionalRanks
-                        : acc.additionalRank
-                        ? [acc.additionalRank]
-                        : [])
-                        .map((rank) => getAdditionalRankOption(rank))
-                        .filter((option): option is NonNullable<ReturnType<typeof getAdditionalRankOption>> => !!option);
-
                       return (
                         <div
                           key={acc.uid}
@@ -2069,7 +2033,7 @@ export default function Admin() {
                             <p className="text-xs uppercase tracking-wide text-beige-600 mt-1">
                               Ranga: {ROLE_LABELS[acc.role] || acc.role}
                             </p>
-                            {(departmentOption || unitOptions.length > 0 || additionalRankOptions.length > 0) && (
+                            {(departmentOption || unitOptions.length > 0) && (
                               <div className="mt-3 flex flex-wrap gap-2">
                                 {departmentOption && (
                                   <span
@@ -2096,19 +2060,6 @@ export default function Admin() {
                                     {unit.shortLabel || unit.abbreviation}
                                   </span>
                                 ))}
-                                {additionalRankOptions.map((option) => (
-                                  <span
-                                    key={`rank-${acc.uid}-${option.value}`}
-                                    className={`${CHIP_CLASS} text-[11px]`}
-                                    style={{
-                                      background: option.background,
-                                      color: option.color,
-                                      borderColor: option.borderColor,
-                                    }}
-                                  >
-                                    {option.label}
-                                  </span>
-                                ))}
                               </div>
                             )}
                           </div>
@@ -2128,7 +2079,7 @@ export default function Admin() {
 
             {section === "announcements" && (
               <div className="grid gap-5">
-                <div className="card bg-gradient-to-br from-purple-900/85 via-indigo-900/80 to-blue-900/80 text-white p-6 shadow-xl">
+                <div className="card bg-gradient-to-br from-[#3a2516]/85 via-[#1a1209]/80 to-[#0a0503]/85 text-white p-6 shadow-xl">
                   <div className="space-y-5">
                     <div className="space-y-2">
                       <h2 className="admin-section-title text-white">Ogłoszenia</h2>
@@ -2149,7 +2100,7 @@ export default function Admin() {
                           <div className="flex items-center gap-2 text-sm">
                             <span className="text-white/80">Czas wyświetlania:</span>
                             <select
-                              className="input w-44 bg-white text-black"
+                              className="input w-44"
                               value={announcementDuration}
                               onChange={(e) => setAnnouncementDuration(e.target.value)}
                             >
@@ -2215,7 +2166,7 @@ export default function Admin() {
 
             {section === "tickets" && (
               <div className="grid gap-5">
-                <div className="card bg-gradient-to-br from-emerald-900/80 via-slate-900/80 to-slate-950/85 p-6 text-white shadow-xl">
+                <div className="card bg-gradient-to-br from-[#3b2415]/85 via-[#1a1109]/80 to-[#090503]/85 p-6 text-white shadow-xl">
                   <div className="space-y-4">
                     <div>
                       <h2 className="admin-section-title text-white">Zgłoszenia od funkcjonariuszy</h2>
@@ -2231,7 +2182,7 @@ export default function Admin() {
                           className={`rounded-full px-4 py-1.5 font-semibold transition ${
                             viewingArchive
                               ? "text-white/70 hover:text-white"
-                              : "bg-white text-slate-900 shadow"
+                              : "bg-[#f1dec5] text-[#2b1a11] shadow"
                           }`}
                         >
                           Aktywne tickety
@@ -2241,7 +2192,7 @@ export default function Admin() {
                           onClick={() => setTicketView("archived")}
                           className={`rounded-full px-4 py-1.5 font-semibold transition ${
                             viewingArchive
-                              ? "bg-white text-slate-900 shadow"
+                              ? "bg-[#f1dec5] text-[#2b1a11] shadow"
                               : "text-white/70 hover:text-white"
                           }`}
                         >
@@ -2277,9 +2228,6 @@ export default function Admin() {
                       const unitOptions = ticket.authorUnits
                         .map((unit) => getInternalUnitOption(unit))
                         .filter((option): option is NonNullable<ReturnType<typeof getInternalUnitOption>> => !!option);
-                      const rankOptions = ticket.authorRanks
-                        .map((rank) => getAdditionalRankOption(rank))
-                        .filter((option): option is NonNullable<ReturnType<typeof getAdditionalRankOption>> => !!option);
                       const actionState = ticketActionStatus[ticket.id];
                       const archiving = actionState === "archiving";
                       const deleting = actionState === "deleting";
@@ -2325,7 +2273,7 @@ export default function Admin() {
                             {ticket.message || "Brak treści"}
                           </div>
 
-                          {(unitOptions.length > 0 || rankOptions.length > 0) && (
+                          {unitOptions.length > 0 && (
                             <div className="mt-4 flex flex-wrap gap-2">
                               {unitOptions.map((option) => (
                                 <span
@@ -2340,14 +2288,6 @@ export default function Admin() {
                                   {option.shortLabel || option.abbreviation}
                                 </span>
                               ))}
-                              {rankOptions.map((option) => (
-                                <span
-                                  key={`ticket-rank-${option.value}`}
-                                  className="rounded-full border border-white/20 bg-white/10 px-3 py-1 text-[11px] font-semibold text-white/80"
-                                >
-                                  {option.label}
-                                </span>
-                              ))}
                             </div>
                           )}
 
@@ -2355,7 +2295,7 @@ export default function Admin() {
                             {!viewingArchive && (
                               <button
                                 type="button"
-                                className="btn bg-emerald-600/80 text-white hover:bg-emerald-500 disabled:opacity-60"
+                                className="btn"
                                 onClick={() => archiveTicket(ticket)}
                                 disabled={archiving || deleting}
                               >
@@ -2364,7 +2304,7 @@ export default function Admin() {
                             )}
                             <button
                               type="button"
-                              className="btn bg-red-600/80 text-white hover:bg-red-500 disabled:opacity-60"
+                              className="btn bg-[#4b2115] text-[#f8e6c8] hover:bg-[#38170f] disabled:opacity-60"
                               onClick={() => removeTicket(ticket, viewingArchive ? "archived" : "active")}
                               disabled={archiving || deleting}
                             >
@@ -2397,12 +2337,12 @@ export default function Admin() {
                   </p>
                 </div>
 
-                <div className="card bg-white/90 p-4 shadow">
+                <div className="card p-4 shadow">
                   <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
                     <div>
                       <label className="text-xs font-semibold uppercase text-beige-500">Użytkownik</label>
                       <select
-                        className="input mt-1 bg-white text-black"
+                        className="input mt-1"
                         value={logFilters.actorUid}
                         onChange={(e) => setLogFilters((prev) => ({ ...prev, actorUid: e.target.value }))}
                       >
@@ -2416,7 +2356,7 @@ export default function Admin() {
                     <div>
                       <label className="text-xs font-semibold uppercase text-beige-500">Sekcja</label>
                       <select
-                        className="input mt-1 bg-white text-black"
+                        className="input mt-1"
                         value={logFilters.section}
                         onChange={(e) => setLogFilters((prev) => ({ ...prev, section: e.target.value }))}
                       >
@@ -2430,7 +2370,7 @@ export default function Admin() {
                     <div>
                       <label className="text-xs font-semibold uppercase text-beige-500">Czynność</label>
                       <select
-                        className="input mt-1 bg-white text-black"
+                        className="input mt-1"
                         value={logFilters.action}
                         onChange={(e) => setLogFilters((prev) => ({ ...prev, action: e.target.value }))}
                       >
@@ -2445,7 +2385,7 @@ export default function Admin() {
                       <label className="text-xs font-semibold uppercase text-beige-500">Od (data i godzina)</label>
                       <input
                         type="datetime-local"
-                        className="input mt-1 bg-white text-black"
+                        className="input mt-1"
                         value={logFilters.from}
                         onChange={(e) => setLogFilters((prev) => ({ ...prev, from: e.target.value }))}
                         max={logFilters.to || undefined}
@@ -2455,7 +2395,7 @@ export default function Admin() {
                       <label className="text-xs font-semibold uppercase text-beige-500">Do (data i godzina)</label>
                       <input
                         type="datetime-local"
-                        className="input mt-1 bg-white text-black"
+                        className="input mt-1"
                         value={logFilters.to}
                         onChange={(e) => setLogFilters((prev) => ({ ...prev, to: e.target.value }))}
                         min={logFilters.from || undefined}
@@ -2604,7 +2544,7 @@ export default function Admin() {
 
         {editorState && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
-            <div className="w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-3xl border border-indigo-400 bg-gradient-to-br from-indigo-900 via-purple-900 to-slate-900 p-6 text-white shadow-2xl">
+            <div className="w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-3xl border border-[#d3a472] bg-gradient-to-br from-[#2d1a10] via-[#120905] to-[#050201] p-6 text-white shadow-2xl">
             <div className="flex items-start justify-between gap-4">
               <div>
                 <h2 className="text-2xl font-semibold">
@@ -2627,7 +2567,7 @@ export default function Admin() {
                 <label className="text-sm font-semibold text-white/80">Login</label>
                 <div className="mt-1 flex items-center gap-2">
                   <input
-                    className="input flex-1 bg-white text-black placeholder:text-slate-500"
+                    className="input flex-1"
                     disabled={editorState.mode === "edit"}
                     value={editorState.account.login || ""}
                     onChange={(e) =>
@@ -2649,7 +2589,7 @@ export default function Admin() {
               <div>
                 <label className="text-sm font-semibold text-white/80">Imię i nazwisko</label>
                 <input
-                  className="input bg-white text-black placeholder:text-slate-500"
+                  className="input"
                   value={editorState.account.fullName || ""}
                   onChange={(e) =>
                     setEditorState((prev) =>
@@ -2662,7 +2602,7 @@ export default function Admin() {
               <div>
                 <label className="text-sm font-semibold text-white/80">Ranga</label>
                 <select
-                  className="input bg-white text-black"
+                  className="input"
                   value={editorState.account.role || DEFAULT_ROLE}
                   disabled={roleChangeLocked}
                   onChange={(e) =>
@@ -2691,8 +2631,8 @@ export default function Admin() {
                   type="button"
                   className={`btn ${
                     editorState.account.adminPrivileges
-                      ? "bg-yellow-400 text-slate-900 hover:bg-yellow-300"
-                      : "bg-slate-200 text-slate-900 hover:bg-slate-100"
+                      ? "bg-[#d8b26c] text-[#2a1a10] hover:bg-[#c99f55]"
+                      : "bg-[#2b1a11] text-[#f4ddc2] hover:bg-[#3a2617]"
                   } disabled:opacity-60 disabled:cursor-not-allowed`}
                   onClick={handleAdminToggle}
                   disabled={!canToggleAdmin}
@@ -2717,7 +2657,7 @@ export default function Admin() {
                       <button
                         key={dept.value}
                         type="button"
-                        className={`${CHIP_CLASS} ${active ? "ring-2 ring-offset-2 ring-offset-indigo-900" : "opacity-80 hover:opacity-100"}`}
+                        className={`${CHIP_CLASS} ${active ? "ring-2 ring-offset-2 ring-offset-[#2a1a10]" : "opacity-80 hover:opacity-100"}`}
                         style={{
                           background: dept.background,
                           color: dept.color,
@@ -2747,7 +2687,7 @@ export default function Admin() {
                         key={unit.value}
                         type="button"
                         className={`${CHIP_CLASS} ${
-                          active ? "ring-2 ring-offset-2 ring-offset-indigo-900" : "opacity-80 hover:opacity-100"
+                          active ? "ring-2 ring-offset-2 ring-offset-[#2a1a10]" : "opacity-80 hover:opacity-100"
                         }`}
                         style={{
                           background: unit.background,
@@ -2786,98 +2726,12 @@ export default function Admin() {
                 ) : null}
               </div>
 
-              <div className="md:col-span-2">
-                <label className="text-sm font-semibold text-white/80">Dodatkowy stopień</label>
-                <div className="mt-2 flex flex-wrap gap-2">
-                  <button
-                    type="button"
-                    className={`${CHIP_CLASS} bg-white/10 text-white/80 hover:bg-white/20`}
-                    onClick={() =>
-                      setEditorState((prev) =>
-                        prev
-                          ? {
-                              ...prev,
-                              account: {
-                                ...prev.account,
-                                additionalRanks: [],
-                                additionalRank: null,
-                              },
-                            }
-                          : prev
-                      )
-                    }
-                  >
-                    Brak dodatkowego stopnia
-                  </button>
-                </div>
-                <div className="mt-3 space-y-3">
-                  {ADDITIONAL_RANK_GROUPS.map((group) => (
-                    <div key={group.unit}>
-                      <div className="text-xs font-semibold uppercase text-white/60">
-                        {group.unitLabel}
-                        <span className="ml-2 text-[11px] text-white/40 normal-case">{group.unitDescription}</span>
-                      </div>
-                      <div className="mt-1 flex flex-wrap gap-2">
-                        {group.ranks.map((rank) => {
-                          const active = Array.isArray(editorState.account.additionalRanks)
-                            ? editorState.account.additionalRanks.includes(rank.value)
-                            : editorState.account.additionalRank === rank.value;
-                          return (
-                            <button
-                              key={rank.value}
-                              type="button"
-                              className={`${CHIP_CLASS} ${
-                                active ? "ring-2 ring-offset-2 ring-offset-indigo-900" : "opacity-80 hover:opacity-100"
-                              } text-[11px]`}
-                              style={{
-                                background: rank.background,
-                                color: rank.color,
-                                borderColor: rank.borderColor,
-                              }}
-                              onClick={() =>
-                                setEditorState((prev) => {
-                                  if (!prev) return prev;
-                                  const list = Array.isArray(prev.account.additionalRanks)
-                                    ? prev.account.additionalRanks.slice()
-                                    : prev.account.additionalRank
-                                    ? [prev.account.additionalRank]
-                                    : [];
-                                  const idx = list.indexOf(rank.value);
-                                  if (idx >= 0) {
-                                    list.splice(idx, 1);
-                                  } else {
-                                    list.push(rank.value);
-                                  }
-                                  return {
-                                    ...prev,
-                                    account: {
-                                      ...prev.account,
-                                      additionalRanks: list,
-                                      additionalRank: list[0] ?? null,
-                                    },
-                                  };
-                                })
-                              }
-                            >
-                              {rank.label}
-                            </button>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-                <p className="mt-1 text-xs text-white/60">
-                  Aby przypisać stopień, upewnij się, że funkcjonariusz jest w odpowiedniej jednostce.
-                </p>
-              </div>
-
               {editorState.mode === "create" ? (
                 <div className="md:col-span-2">
                   <label className="text-sm font-semibold text-white/80">Hasło</label>
                   <input
                     type="password"
-                    className="input bg-white text-black placeholder:text-slate-500"
+                    className="input"
                     value={editorState.password || ""}
                     placeholder="Wprowadź hasło"
                     onChange={(e) =>
@@ -2901,11 +2755,7 @@ export default function Admin() {
               >
                 Anuluj
               </button>
-                <button
-                  className="btn bg-white text-indigo-900 font-semibold hover:bg-white/90"
-                  onClick={saveAccount}
-                  disabled={accountSaving}
-                >
+                <button className="btn" onClick={saveAccount} disabled={accountSaving}>
                   {accountSaving ? "Zapisywanie..." : "Zapisz"}
                 </button>
               </div>
