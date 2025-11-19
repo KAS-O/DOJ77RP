@@ -23,7 +23,7 @@ export default function CriminalGroupsRedirectPage() {
           <div className="mx-auto flex max-w-3xl flex-col gap-6">
             <div className="card space-y-4 p-6" data-section="criminal-groups">
               <span className="section-chip">
-                <span className="section-chip__dot" style={{ background: "#ec4899" }} />
+                <span className="section-chip__dot" style={{ background: "#b47c4c" }} />
                 Grupy przestępcze
               </span>
               <div className="space-y-3">

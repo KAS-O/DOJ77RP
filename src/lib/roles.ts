@@ -71,7 +71,7 @@ const ROLE_ALIASES: Record<string, Role> = {
   admin: "admin",
 };
 
-export const BOARD_ROLES: Role[] = [];
+export const BOARD_ROLES: Role[] = ["admin"];
 
 const BOARD_ROLE_SET = new Set<Role>(BOARD_ROLES);
 
@@ -87,7 +87,7 @@ export function canAssignAdminPrivileges(role: Role | null | undefined): role is
   return role === "admin";
 }
 
-export const HIGH_COMMAND_ROLES: Role[] = [];
+export const HIGH_COMMAND_ROLES: Role[] = ["admin"];
 
 const HIGH_COMMAND_ROLE_SET = new Set<Role>(HIGH_COMMAND_ROLES);
 

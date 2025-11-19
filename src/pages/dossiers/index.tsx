@@ -37,7 +37,7 @@ export default function Dossiers() {
   const { confirm, alert } = useDialog();
   const { logActivity, session } = useSessionActivity();
   const { writeLog } = useLogWriter();
-  const accentPalette = ["#a855f7", "#38bdf8", "#f97316", "#22c55e", "#ef4444", "#eab308"];
+  const accentPalette = ["#9f744a", "#6d4a2f", "#c89b6d", "#4b2f1f", "#d6b18a", "#3b2418"];
 
   useEffect(() => {
     const q = query(collection(db, "dossiers"), orderBy("createdAt", "desc"));
@@ -185,7 +185,7 @@ export default function Dossiers() {
                 <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
                   <div className="space-y-2">
                     <span className="section-chip">
-                      <span className="section-chip__dot" style={{ background: "#a855f7" }} />
+                      <span className="section-chip__dot" style={{ background: "#9f744a" }} />
                       Teczki
                     </span>
                     <div>

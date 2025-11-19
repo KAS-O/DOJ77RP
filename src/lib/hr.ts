@@ -2,15 +2,7 @@ export type Department = "doj";
 
 export type InternalUnit = "irs" | "sadownictwo" | "prokuratura" | "palestra";
 
-export type AdditionalRank =
-  | "irs-koordynator"
-  | "irs-inspektor"
-  | "sadownictwo-przewodniczacy"
-  | "sadownictwo-sedzia"
-  | "prokuratura-naczelnik"
-  | "prokuratura-prokurator"
-  | "palestra-dziekan"
-  | "palestra-rzecznik";
+export type AdditionalRank = never;
 
 export type StyledOption<T extends string> = {
   value: T;
@@ -100,56 +92,7 @@ const INTERNAL_UNIT_OPTIONS: InternalUnitOption[] = [
   },
 ];
 
-const ADDITIONAL_RANK_OPTIONS: AdditionalRankOption[] = [
-  {
-    value: "irs-koordynator",
-    label: "Koordynator IRS",
-    unit: "irs",
-    ...UNIT_STYLES.irs,
-  },
-  {
-    value: "irs-inspektor",
-    label: "Inspektor IRS",
-    unit: "irs",
-    ...UNIT_STYLES.irs,
-  },
-  {
-    value: "sadownictwo-przewodniczacy",
-    label: "Przewodniczący Sądownictwa",
-    unit: "sadownictwo",
-    ...UNIT_STYLES.sadownictwo,
-  },
-  {
-    value: "sadownictwo-sedzia",
-    label: "Sędzia Sądownictwa",
-    unit: "sadownictwo",
-    ...UNIT_STYLES.sadownictwo,
-  },
-  {
-    value: "prokuratura-naczelnik",
-    label: "Naczelnik Prokuratury",
-    unit: "prokuratura",
-    ...UNIT_STYLES.prokuratura,
-  },
-  {
-    value: "prokuratura-prokurator",
-    label: "Prokurator",
-    unit: "prokuratura",
-    ...UNIT_STYLES.prokuratura,
-  },
-  {
-    value: "palestra-dziekan",
-    label: "Dziekan Palestry",
-    unit: "palestra",
-    ...UNIT_STYLES.palestra,
-  },
-  {
-    value: "palestra-rzecznik",
-    label: "Rzecznik Dyscyplinarny",
-    unit: "palestra",
-    ...UNIT_STYLES.palestra,
-  },
-];
+const ADDITIONAL_RANK_OPTIONS: AdditionalRankOption[] = [];
 
 export const DEPARTMENTS = DEPARTMENT_OPTIONS;
 export const INTERNAL_UNITS = INTERNAL_UNIT_OPTIONS;
