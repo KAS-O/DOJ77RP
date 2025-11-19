@@ -19,7 +19,14 @@ import {
 import { normalizeRole, type Role, isHighCommand } from "@/lib/roles";
 import { resolveUnitPermission, getUnitSection } from "@/lib/internalUnits";
 
-const SUPPORTED_UNITS = new Set<InternalUnit>(["iad", "swat-sert", "usms", "dtu", "gu", "ftd"]);
+const SUPPORTED_UNIT_SLUGS = [
+  "irs",
+  "sadownictwo",
+  "prokuratura",
+  "palestra",
+] as const satisfies readonly InternalUnit[];
+
+const SUPPORTED_UNITS: ReadonlySet<InternalUnit> = new Set(SUPPORTED_UNIT_SLUGS);
 
 type UnitMember = {
   uid: string;
