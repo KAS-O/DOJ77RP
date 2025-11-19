@@ -343,7 +343,7 @@ export default function UnitPanelPage() {
 
   const unit = section?.unit ?? null;
   const membershipRank = section?.membershipRank ?? null;
-  const supportsCriminalGroups = unit === "gu" || unit === "dtu";
+  const supportsCriminalGroups = false;
   const unitRankSet = useMemo(() => {
     if (!section) {
       return new Set<AdditionalRank>();
