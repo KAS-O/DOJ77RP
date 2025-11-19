@@ -57,7 +57,7 @@ export default function VehicleArchivePage() {
   const { confirm } = useDialog();
   const { session, logActivity } = useSessionActivity();
   const { writeLog } = useLogWriter();
-  const accentColor = "#0ea5e9";
+  const accentColor = "#6d4b2f";
   const viewLoggedRef = useRef(false);
 
   useEffect(() => {

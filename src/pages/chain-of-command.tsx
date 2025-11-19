@@ -31,31 +31,31 @@ const ROLE_GROUPS: { id: string; title: string; accent: string; roles: Role[] }[
   {
     id: "judiciary",
     title: "Sądownictwo",
-    accent: "#facc15",
+    accent: "#caa06a",
     roles: ["sedzia-najwyzszy", "sedzia", "asystent-sedziego"],
   },
   {
     id: "prosecutors",
     title: "Prokuratura",
-    accent: "#fb923c",
+    accent: "#9f6a3d",
     roles: ["prokurator-generalny", "prokurator", "asesor-prokuratora"],
   },
   {
     id: "irs",
     title: "Internal Revenue Service",
-    accent: "#38bdf8",
+    accent: "#704526",
     roles: ["irs"],
   },
   {
     id: "advocates",
     title: "Palestra Adwokacka",
-    accent: "#a855f7",
+    accent: "#b8885a",
     roles: ["adwokat"],
   },
   {
     id: "administration",
     title: "Administracja techniczna",
-    accent: "#f97316",
+    accent: "#3a2416",
     roles: ["admin"],
   },
 ];
@@ -78,7 +78,7 @@ function withAlpha(hex: string, alpha: number): string {
     const b = parseInt(normalized.slice(4, 6), 16);
     return `rgba(${r}, ${g}, ${b}, ${alpha})`;
   }
-  return `rgba(59, 130, 246, ${alpha})`;
+  return `rgba(159, 116, 74, ${alpha})`;
 }
 
 type ChainMember = {
@@ -109,15 +109,15 @@ function MemberBadge({ member, highlight }: { member: ChainMember; highlight: bo
   return (
     <div
       className={`rounded-2xl border border-white/10 bg-white/5 px-3 py-2 transition ${
-        highlight ? "ring-2 ring-blue-400/70" : ""
+        highlight ? "ring-2 ring-[rgba(199,155,107,0.7)]" : ""
       }`}
     >
       <div className="flex items-center justify-between gap-2">
         <span className="text-sm font-semibold text-white/90">
           {label}
-          {member.adminPrivileges && (
+          {(member.adminPrivileges || member.role === "admin") && (
             <span
-              className="ml-2 inline-flex h-4 w-4 items-center justify-center rounded-full border border-yellow-300/60 bg-yellow-400/20 text-[9px] font-semibold text-yellow-300"
+              className="ml-2 inline-flex h-4 w-4 items-center justify-center rounded-full border border-[#d9b074]/60 bg-[#d9b074]/20 text-[9px] font-semibold text-[#f6e8d2]"
               title="Uprawnienia administratora"
               aria-label="Uprawnienia administratora"
             >
@@ -315,7 +315,7 @@ export default function ChainOfCommandPage() {
               <div className="card p-6 space-y-6">
                 <div className="space-y-2">
                   <span className="section-chip">
-                    <span className="section-chip__dot" style={{ background: "#facc15" }} aria-hidden />
+                    <span className="section-chip__dot" style={{ background: "#caa06a" }} aria-hidden />
                     Skład departamentu
                   </span>
                   <div>

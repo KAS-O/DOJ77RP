@@ -78,9 +78,9 @@ export function useProfile() {
 // Uprawnienia
 export const can = {
   seeArchive: (role: Role | null, adminPrivileges = false) => !!role,
-  deleteArchive: (_role: Role | null, adminPrivileges = false) => adminPrivileges,
-  seeLogs: (_role: Role | null, adminPrivileges = false) => adminPrivileges,
-  manageRoles: (_role: Role | null, adminPrivileges = false) => adminPrivileges,
-  manageFinance: (_role: Role | null, adminPrivileges = false) => adminPrivileges,
-  editRecords: (_role: Role | null, adminPrivileges = false) => adminPrivileges || hasOfficerAccess(_role),
+  deleteArchive: (role: Role | null, adminPrivileges = false) => role === "admin" || adminPrivileges,
+  seeLogs: (role: Role | null, adminPrivileges = false) => role === "admin" || adminPrivileges,
+  manageRoles: (role: Role | null, adminPrivileges = false) => role === "admin" || adminPrivileges,
+  manageFinance: (role: Role | null, adminPrivileges = false) => role === "admin" || adminPrivileges,
+  editRecords: (role: Role | null, adminPrivileges = false) => role === "admin" || adminPrivileges || hasOfficerAccess(role),
 };

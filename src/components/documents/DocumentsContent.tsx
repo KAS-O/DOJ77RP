@@ -2,7 +2,7 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 import { TEMPLATES } from "@/lib/templates";
 
-const accentPalette = ["#60a5fa", "#34d399", "#f472b6", "#facc15", "#f97316", "#818cf8"];
+const accentPalette = ["#9f744a", "#6d4a2f", "#b98a63", "#4d3424", "#c8a274", "#3b2418"];
 
 export function DocumentsContent() {
   const [query, setQuery] = useState("");
@@ -18,7 +18,7 @@ export function DocumentsContent() {
       <div className="card flex min-h-0 flex-col gap-4 overflow-hidden p-4 md:p-5 lg:p-6" data-section="documents">
         <div className="space-y-3">
           <span className="section-chip text-xs sm:text-sm">
-            <span className="section-chip__dot" style={{ background: "#60a5fa" }} />
+            <span className="section-chip__dot" style={{ background: "#9f744a" }} />
             Dokumenty
           </span>
           <div className="space-y-2">

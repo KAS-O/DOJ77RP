@@ -237,31 +237,31 @@ const ADMIN_SECTION_META: Record<
     label: "Podsumowanie",
     description: "Statystyki i finanse",
     icon: "📊",
-    accent: "#38bdf8",
+    accent: "#a7744a",
   },
   hr: {
     label: "Dział Kadr",
     description: "Kontrola kont i rang",
     icon: "🛡️",
-    accent: "#6366f1",
+    accent: "#7c4f32",
   },
   announcements: {
     label: "Ogłoszenia",
     description: "Komunikaty dla funkcjonariuszy",
     icon: "📣",
-    accent: "#f59e0b",
+    accent: "#c89b6d",
   },
   tickets: {
     label: "Tickety",
     description: "Zgłoszenia od funkcjonariuszy",
     icon: "🎟️",
-    accent: "#34d399",
+    accent: "#4b2f1f",
   },
   logs: {
     label: "Logi",
     description: "Aktywność kont",
     icon: "🗂️",
-    accent: "#38bdf8",
+    accent: "#d6b18a",
   },
 };
 
@@ -314,7 +314,7 @@ async function readErrorResponse(res: Response, fallback: string) {
 
 export default function Admin() {
   const { role, login, fullName, adminPrivileges, ready } = useProfile();
-  const hasAdminAccess = adminPrivileges;
+  const hasAdminAccess = adminPrivileges || role === "admin";
   const canToggleAdmin = canAssignAdminPrivileges(role);
   const { writeLog } = useLogWriter();
   const { confirm, prompt, alert } = useDialog();
@@ -1987,7 +1987,7 @@ export default function Admin() {
 
             {section === "hr" && (
               <div className="grid gap-5">
-                <div className="card bg-gradient-to-br from-sky-900/85 via-indigo-900/80 to-purple-900/80 text-white p-6 shadow-xl">
+                <div className="card bg-gradient-to-br from-[#24160e]/90 via-[#351f12]/85 to-[#4a2a18]/80 text-[#f6e8d2] p-6 shadow-xl">
                   <div className="flex flex-wrap items-start gap-3">
                     <div className="flex-1">
                       <h2 className="admin-section-title text-white">Dział Kadr</h2>
@@ -2053,9 +2053,9 @@ export default function Admin() {
                           <div>
                             <h3 className="text-lg font-semibold">
                               {acc.fullName || "Bez nazwy"}
-                              {acc.adminPrivileges && (
+                              {(acc.adminPrivileges || acc.role === "admin") && (
                                 <span
-                                  className="ml-2 inline-flex h-5 w-5 items-center justify-center rounded-full border border-yellow-300/60 bg-yellow-400/20 text-[11px] font-semibold text-yellow-300"
+                                  className="ml-2 inline-flex h-5 w-5 items-center justify-center rounded-full border border-[#d9b074]/60 bg-[#d9b074]/20 text-[11px] font-semibold text-[#2b1a10]"
                                   title="Uprawnienia administratora"
                                   aria-label="Uprawnienia administratora"
                                 >
@@ -2128,7 +2128,7 @@ export default function Admin() {
 
             {section === "announcements" && (
               <div className="grid gap-5">
-                <div className="card bg-gradient-to-br from-purple-900/85 via-indigo-900/80 to-blue-900/80 text-white p-6 shadow-xl">
+                <div className="card bg-gradient-to-br from-[#1a1009]/95 via-[#2b1a10]/90 to-[#3b2516]/85 text-[#f6e8d2] p-6 shadow-xl">
                   <div className="space-y-5">
                     <div className="space-y-2">
                       <h2 className="admin-section-title text-white">Ogłoszenia</h2>
@@ -2604,7 +2604,7 @@ export default function Admin() {
 
         {editorState && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
-            <div className="w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-3xl border border-indigo-400 bg-gradient-to-br from-indigo-900 via-purple-900 to-slate-900 p-6 text-white shadow-2xl">
+            <div className="w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-3xl border border-[#cfa677] bg-gradient-to-br from-[#1a1009] via-[#2b1a10] to-[#3b2516] p-6 text-[#f6e8d2] shadow-2xl">
             <div className="flex items-start justify-between gap-4">
               <div>
                 <h2 className="text-2xl font-semibold">
@@ -2691,8 +2691,8 @@ export default function Admin() {
                   type="button"
                   className={`btn ${
                     editorState.account.adminPrivileges
-                      ? "bg-yellow-400 text-slate-900 hover:bg-yellow-300"
-                      : "bg-slate-200 text-slate-900 hover:bg-slate-100"
+                      ? "bg-[#d9b074] text-[#2b1a10] hover:bg-[#c89b6d]"
+                      : "bg-[#1f140d] text-[#f6e8d2] hover:bg-[#2b1a10]"
                   } disabled:opacity-60 disabled:cursor-not-allowed`}
                   onClick={handleAdminToggle}
                   disabled={!canToggleAdmin}
@@ -2717,7 +2717,7 @@ export default function Admin() {
                       <button
                         key={dept.value}
                         type="button"
-                        className={`${CHIP_CLASS} ${active ? "ring-2 ring-offset-2 ring-offset-indigo-900" : "opacity-80 hover:opacity-100"}`}
+                        className={`${CHIP_CLASS} ${active ? "ring-2 ring-offset-2 ring-offset-[#2b1a10]" : "opacity-80 hover:opacity-100"}`}
                         style={{
                           background: dept.background,
                           color: dept.color,
@@ -2747,7 +2747,7 @@ export default function Admin() {
                         key={unit.value}
                         type="button"
                         className={`${CHIP_CLASS} ${
-                          active ? "ring-2 ring-offset-2 ring-offset-indigo-900" : "opacity-80 hover:opacity-100"
+                          active ? "ring-2 ring-offset-2 ring-offset-[#2b1a10]" : "opacity-80 hover:opacity-100"
                         }`}
                         style={{
                           background: unit.background,
@@ -2786,91 +2786,93 @@ export default function Admin() {
                 ) : null}
               </div>
 
-              <div className="md:col-span-2">
-                <label className="text-sm font-semibold text-white/80">Dodatkowy stopień</label>
-                <div className="mt-2 flex flex-wrap gap-2">
-                  <button
-                    type="button"
-                    className={`${CHIP_CLASS} bg-white/10 text-white/80 hover:bg-white/20`}
-                    onClick={() =>
-                      setEditorState((prev) =>
-                        prev
-                          ? {
-                              ...prev,
-                              account: {
-                                ...prev.account,
-                                additionalRanks: [],
-                                additionalRank: null,
-                              },
-                            }
-                          : prev
-                      )
-                    }
-                  >
-                    Brak dodatkowego stopnia
-                  </button>
-                </div>
-                <div className="mt-3 space-y-3">
-                  {ADDITIONAL_RANK_GROUPS.map((group) => (
-                    <div key={group.unit}>
-                      <div className="text-xs font-semibold uppercase text-white/60">
-                        {group.unitLabel}
-                        <span className="ml-2 text-[11px] text-white/40 normal-case">{group.unitDescription}</span>
-                      </div>
-                      <div className="mt-1 flex flex-wrap gap-2">
-                        {group.ranks.map((rank) => {
-                          const active = Array.isArray(editorState.account.additionalRanks)
-                            ? editorState.account.additionalRanks.includes(rank.value)
-                            : editorState.account.additionalRank === rank.value;
-                          return (
-                            <button
-                              key={rank.value}
-                              type="button"
-                              className={`${CHIP_CLASS} ${
-                                active ? "ring-2 ring-offset-2 ring-offset-indigo-900" : "opacity-80 hover:opacity-100"
-                              } text-[11px]`}
-                              style={{
-                                background: rank.background,
-                                color: rank.color,
-                                borderColor: rank.borderColor,
-                              }}
-                              onClick={() =>
-                                setEditorState((prev) => {
-                                  if (!prev) return prev;
-                                  const list = Array.isArray(prev.account.additionalRanks)
-                                    ? prev.account.additionalRanks.slice()
-                                    : prev.account.additionalRank
-                                    ? [prev.account.additionalRank]
-                                    : [];
-                                  const idx = list.indexOf(rank.value);
-                                  if (idx >= 0) {
-                                    list.splice(idx, 1);
-                                  } else {
-                                    list.push(rank.value);
-                                  }
-                                  return {
-                                    ...prev,
-                                    account: {
-                                      ...prev.account,
-                                      additionalRanks: list,
-                                      additionalRank: list[0] ?? null,
-                                    },
-                                  };
-                                })
+              {ADDITIONAL_RANK_GROUPS.length > 0 && (
+                <div className="md:col-span-2">
+                  <label className="text-sm font-semibold text-white/80">Dodatkowy stopień</label>
+                  <div className="mt-2 flex flex-wrap gap-2">
+                    <button
+                      type="button"
+                      className={`${CHIP_CLASS} bg-white/10 text-white/80 hover:bg-white/20`}
+                      onClick={() =>
+                        setEditorState((prev) =>
+                          prev
+                            ? {
+                                ...prev,
+                                account: {
+                                  ...prev.account,
+                                  additionalRanks: [],
+                                  additionalRank: null,
+                                },
                               }
-                            >
-                              {rank.label}
-                            </button>
-                          );
-                        })}
+                            : prev
+                        )
+                      }
+                    >
+                      Brak dodatkowego stopnia
+                    </button>
+                  </div>
+                  <div className="mt-3 space-y-3">
+                    {ADDITIONAL_RANK_GROUPS.map((group) => (
+                      <div key={group.unit}>
+                        <div className="text-xs font-semibold uppercase text-white/60">
+                          {group.unitLabel}
+                          <span className="ml-2 text-[11px] text-white/40 normal-case">{group.unitDescription}</span>
+                        </div>
+                        <div className="mt-1 flex flex-wrap gap-2">
+                          {group.ranks.map((rank) => {
+                            const active = Array.isArray(editorState.account.additionalRanks)
+                              ? editorState.account.additionalRanks.includes(rank.value)
+                              : editorState.account.additionalRank === rank.value;
+                            return (
+                              <button
+                                key={rank.value}
+                                type="button"
+                                className={`${CHIP_CLASS} ${
+                                  active ? "ring-2 ring-offset-2 ring-offset-[#2b1a10]" : "opacity-80 hover:opacity-100"
+                                } text-[11px]`}
+                                style={{
+                                  background: rank.background,
+                                  color: rank.color,
+                                  borderColor: rank.borderColor,
+                                }}
+                                onClick={() =>
+                                  setEditorState((prev) => {
+                                    if (!prev) return prev;
+                                    const list = Array.isArray(prev.account.additionalRanks)
+                                      ? prev.account.additionalRanks.slice()
+                                      : prev.account.additionalRank
+                                      ? [prev.account.additionalRank]
+                                      : [];
+                                    const idx = list.indexOf(rank.value);
+                                    if (idx >= 0) {
+                                      list.splice(idx, 1);
+                                    } else {
+                                      list.push(rank.value);
+                                    }
+                                    return {
+                                      ...prev,
+                                      account: {
+                                        ...prev.account,
+                                        additionalRanks: list,
+                                        additionalRank: list[0] ?? null,
+                                      },
+                                    };
+                                  })
+                                }
+                              >
+                                {rank.label}
+                              </button>
+                            );
+                          })}
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
+                  <p className="mt-1 text-xs text-white/60">
+                    Aby przypisać stopień, upewnij się, że funkcjonariusz jest w odpowiedniej jednostce.
+                  </p>
                 </div>
-                <p className="mt-1 text-xs text-white/60">
-                  Aby przypisać stopień, upewnij się, że funkcjonariusz jest w odpowiedniej jednostce.
-                </p>
-              </div>
+              )}
 
               {editorState.mode === "create" ? (
                 <div className="md:col-span-2">
@@ -2902,7 +2904,7 @@ export default function Admin() {
                 Anuluj
               </button>
                 <button
-                  className="btn bg-white text-indigo-900 font-semibold hover:bg-white/90"
+                className="btn bg-white text-[#2b1a10] font-semibold hover:bg-white/90"
                   onClick={saveAccount}
                   disabled={accountSaving}
                 >

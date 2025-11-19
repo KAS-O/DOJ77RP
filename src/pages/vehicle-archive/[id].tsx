@@ -152,7 +152,7 @@ export default function VehicleFolderPage() {
     if (typeof border === "string" && border.trim().length > 0) {
       return border;
     }
-    return "#0ea5e9";
+    return "#6d4b2f";
   }, [highlight?.style]);
   const baseHeaderStyle = useMemo(
     () => ({

@@ -1044,7 +1044,7 @@ export default function ArchivePage() {
                 <div className="flex flex-col gap-4 xl:flex-row xl:items-center">
                   <div className="space-y-1 flex-1 min-w-[min(320px,100%)]">
                     <span className="section-chip">
-                      <span className="section-chip__dot" style={{ background: "#f59e0b" }} />
+                      <span className="section-chip__dot" style={{ background: "#c89b6d" }} />
                       Archiwum
                     </span>
                     <h1 className="text-3xl font-semibold tracking-tight">Archiwum dokumentów służbowych</h1>
@@ -1060,7 +1060,7 @@ export default function ArchivePage() {
                       Resetuj filtry
                     </button>
                     <button
-                      className={`btn ${selectionMode ? "bg-blue-800 text-white" : ""}`}
+                      className={`btn ${selectionMode ? "bg-[#2b1a10] text-[#f6e8d2]" : ""}`}
                       type="button"
                       onClick={toggleSelectionMode}
                     >
@@ -1139,7 +1139,7 @@ export default function ArchivePage() {
                   <div
                     key={item.id}
                     className={`card relative p-4 grid md:grid-cols-[1fr_auto] gap-3 transition-all ${
-                      isSelected ? "ring-2 ring-blue-400/80" : ""
+                      isSelected ? "ring-2 ring-[rgba(199,155,107,0.8)]" : ""
                     }`}
                   >
                     {selectionMode && (
@@ -1147,7 +1147,7 @@ export default function ArchivePage() {
                         type="button"
                         onClick={() => toggleSelected(item.id)}
                         className={`absolute top-3 right-3 flex h-6 w-6 items-center justify-center rounded-full border border-white/40 transition ${
-                          isSelected ? "bg-blue-500/80 border-blue-200" : "bg-black/30"
+                          isSelected ? "bg-[#5c3d27]/80 border-[#d9b074]/60" : "bg-black/30"
                         }`}
                         aria-pressed={isSelected}
                       >
@@ -1193,7 +1193,7 @@ export default function ArchivePage() {
                           {imageLinks.map((url, index) => (
                             <a
                               key={`${item.id}-image-${index}`}
-                              className="text-blue-700 underline"
+                              className="text-[#d9b074] underline"
                               href={url}
                               target="_blank"
                               rel="noreferrer"

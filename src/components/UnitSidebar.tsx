@@ -362,9 +362,9 @@ export default function UnitSidebar({
           <div className="space-y-1">
             <p className="text-lg font-semibold text-white">
               {fullName || login || "Nieznany funkcjonariusz"}
-              {adminPrivileges && (
+              {(adminPrivileges || role === "admin") && (
                 <span
-                  className="ml-2 inline-flex h-5 w-5 items-center justify-center rounded-full border border-yellow-300/60 bg-yellow-400/20 text-[11px] font-semibold text-yellow-300"
+                  className="ml-2 inline-flex h-5 w-5 items-center justify-center rounded-full border border-[#d9b074]/60 bg-[#d9b074]/20 text-[11px] font-semibold text-[#f6e8d2]"
                   title="Uprawnienia administratora"
                   aria-label="Uprawnienia administratora"
                 >

@@ -81,16 +81,16 @@ const RECORD_LABELS: Record<string, string> = {
 };
 
 const RECORD_COLORS: Record<string, string> = {
-  note: "#7c3aed",
-  weapon: "#ef4444",
-  drug: "#10b981",
-  explosive: "#f97316",
-  member: "#6366f1",
-  vehicle: "#0ea5e9",
-  "group-link": "#facc15",
+  note: "#8d6a4b",
+  weapon: "#5a3524",
+  drug: "#6e4c2d",
+  explosive: "#3c2416",
+  member: "#b88a5d",
+  vehicle: "#4a3323",
+  "group-link": "#caa06a",
 };
 
-const CONTROLLED_COLOR = "#fb923c";
+const CONTROLLED_COLOR = "#7a4f2f";
 
 const ACTIVE_FORM_TITLES: Record<Exclude<ActiveFormType, null>, string> = {
   note: "Dodaj notatkę",
@@ -102,12 +102,12 @@ const ACTIVE_FORM_TITLES: Record<Exclude<ActiveFormType, null>, string> = {
 };
 
 const MEMBER_RANKS: RankOption[] = [
-  { value: "rekrut", label: "Rekrut", color: "#fef08a" },
-  { value: "członek", label: "Członek", color: "#fde047" },
-  { value: "wysoki członek", label: "Wysoki członek", color: "#facc15" },
-  { value: "prawa ręka", label: "Prawa ręka", color: "#f97316" },
-  { value: "zarząd", label: "Zarząd", color: "#ef4444" },
-  { value: "brak informacji", label: "Brak informacji", color: "#94a3b8" },
+  { value: "rekrut", label: "Rekrut", color: "#caa06a" },
+  { value: "członek", label: "Członek", color: "#a6784f" },
+  { value: "wysoki członek", label: "Wysoki członek", color: "#8b5f3d" },
+  { value: "prawa ręka", label: "Prawa ręka", color: "#6a452d" },
+  { value: "zarząd", label: "Zarząd", color: "#4b2f1f" },
+  { value: "brak informacji", label: "Brak informacji", color: "#5a4636" },
 ];
 
 function hexToRgb(hex: string): { r: number; g: number; b: number } | null {
@@ -193,7 +193,7 @@ function AttachmentPreview({
       href={attachment.url}
       target="_blank"
       rel="noreferrer"
-      className="inline-flex items-center gap-2 text-sm underline text-blue-200"
+      className="inline-flex items-center gap-2 text-sm underline text-[#d9b074]"
       onClick={onOpen}
     >
       📎 {attachment.name || "Pobierz załącznik"}
@@ -302,7 +302,7 @@ export default function DossierPage() {
 
   const isCriminalGroup = info.category === "criminal-group";
   const canDeleteDossier = (adminPrivileges || hasOfficerAccess(role)) && !isCriminalGroup;
-  const groupColorHex = info.group?.colorHex || "#7c3aed";
+  const groupColorHex = info.group?.colorHex || "#4a3323";
   const groupDisplayName = useMemo(
     () => info.group?.name || title || "Grupa przestępcza",
     [info.group, title]
@@ -1645,49 +1645,49 @@ export default function DossierPage() {
         label: "Łączna wartość czarnorynkowa",
         value: numberFormatter.format(summaryStats.blackMarket),
         icon: "💰",
-        accent: "#facc15",
+        accent: "#d1a572",
       },
       {
         key: "bombs",
         label: "Przejęte ładunki wybuchowe",
         value: numberFormatter.format(summaryStats.bombs),
         icon: "💣",
-        accent: "#ef4444",
+        accent: "#6a3d2a",
       },
       {
         key: "drugs",
         label: "Przejęte narkotyki (g)",
         value: numberFormatter.format(summaryStats.drugs),
         icon: "🧪",
-        accent: "#22d3ee",
+        accent: "#8a5f3c",
       },
       {
         key: "weapons",
         label: "Przejęta broń",
         value: numberFormatter.format(summaryStats.weapons),
         icon: "🔫",
-        accent: "#f472b6",
+        accent: "#4b2f1f",
       },
       {
         key: "members",
         label: "Członkowie w kartotece",
         value: numberFormatter.format(organizationMembers.length),
         icon: "🧑‍🤝‍🧑",
-        accent: "#34d399",
+        accent: "#b8895f",
       },
       {
         key: "vehicles",
         label: "Powiązane pojazdy",
         value: numberFormatter.format(organizationVehicles.length),
         icon: "🚘",
-        accent: "#60a5fa",
+        accent: "#5c3f29",
       },
       {
         key: "records",
         label: "Zarchiwizowane wpisy",
         value: numberFormatter.format(timelineRecords.length),
         icon: "🗂️",
-        accent: "#818cf8",
+        accent: "#3a2416",
       },
     ],
     [
@@ -1810,7 +1810,7 @@ export default function DossierPage() {
             <div className="flex items-center gap-2">
               <span
                 className="px-2 py-0.5 text-xs font-semibold rounded-full"
-                style={{ background: withAlpha(record.rankColor || "#64748b", 0.25), color: record.rankColor || "#e2e8f0" }}
+                style={{ background: withAlpha(record.rankColor || "#4a3a2c", 0.25), color: record.rankColor || "#f6e8d2" }}
               >
                 {record.rank || "Brak informacji"}
               </span>
@@ -1820,7 +1820,7 @@ export default function DossierPage() {
             {record.dossierId ? (
               <a
                 href={`/dossiers/${record.dossierId}`}
-                className="underline text-blue-200"
+                className="underline text-[#d9b074]"
               >
                 Przejdź do teczki
               </a>
@@ -1842,7 +1842,7 @@ export default function DossierPage() {
             {record.vehicleId ? (
               <a
                 href={`/vehicle-archive/${record.vehicleId}`}
-                className="underline text-blue-200"
+                className="underline text-[#d9b074]"
                 onClick={() => {
                   if (!session) return;
                   void logActivity({
@@ -1865,7 +1865,7 @@ export default function DossierPage() {
             <div className="flex flex-wrap items-center gap-2">
               <span>Organizacja:</span>
               {record.linkedGroupId ? (
-                <a href={`/criminal-groups/${record.linkedGroupId}`} className="underline text-blue-200">
+                <a href={`/criminal-groups/${record.linkedGroupId}`} className="underline text-[#d9b074]">
                   {record.linkedGroupName || "—"}
                 </a>
               ) : (
@@ -1877,8 +1877,8 @@ export default function DossierPage() {
                 <span
                   className="px-2 py-0.5 rounded-full text-xs font-semibold"
                   style={{
-                    background: withAlpha(record.memberRankColor || record.linkedGroupColor || "#64748b", 0.22),
-                    color: record.memberRankColor || record.linkedGroupColor || "#e2e8f0",
+                    background: withAlpha(record.memberRankColor || record.linkedGroupColor || "#4a3a2c", 0.22),
+                    color: record.memberRankColor || record.linkedGroupColor || "#f6e8d2",
                   }}
                 >
                   {record.memberRank}
@@ -2109,7 +2109,7 @@ export default function DossierPage() {
                               <div className="mt-2 flex flex-wrap gap-1 items-center">
                                 <span
                                   className="px-2 py-0.5 rounded-full text-[11px] font-semibold"
-                                  style={{ background: withAlpha(member.rankColor || "#64748b", 0.24), color: member.rankColor || "#e2e8f0" }}
+                                  style={{ background: withAlpha(member.rankColor || "#4a3a2c", 0.24), color: member.rankColor || "#f6e8d2" }}
                                 >
                                   {member.rank || "Brak informacji"}
                                 </span>
@@ -2121,7 +2121,7 @@ export default function DossierPage() {
                                 <div className="text-xs text-white/70 mt-2 leading-relaxed">Cechy: {member.traits}</div>
                               ) : null}
                               {member.dossierId ? (
-                                <a href={`/dossiers/${member.dossierId}`} className="text-xs underline text-blue-100 mt-2 inline-block">
+                                <a href={`/dossiers/${member.dossierId}`} className="text-xs underline text-[#d9b074] mt-2 inline-block">
                                   Przejdź do teczki
                                 </a>
                               ) : null}

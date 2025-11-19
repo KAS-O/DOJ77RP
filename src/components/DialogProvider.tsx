@@ -49,11 +49,11 @@ const DialogContext = createContext<DialogContextValue | null>(null);
 function toneClasses(tone: DialogTone | undefined) {
   switch (tone) {
     case "danger":
-      return "border-red-400 bg-gradient-to-br from-rose-600/90 via-rose-500/80 to-red-500/80 text-white shadow-[0_0_30px_rgba(220,38,38,0.4)]";
+      return "border-[#d97767] bg-gradient-to-br from-[#4a1f16]/95 via-[#632a1e]/90 to-[#7a3121]/85 text-[#fbe1d4] shadow-[0_0_35px_rgba(122,49,33,0.45)]";
     case "info":
-      return "border-sky-400 bg-gradient-to-br from-sky-500/90 via-blue-500/80 to-indigo-500/80 text-white shadow-[0_0_30px_rgba(14,165,233,0.4)]";
+      return "border-[#d9b07a] bg-gradient-to-br from-[#2c1b11]/95 via-[#3b2416]/90 to-[#4a2b1a]/85 text-[#f6e8d2] shadow-[0_0_35px_rgba(58,36,22,0.5)]";
     default:
-      return "border-purple-400 bg-gradient-to-br from-purple-600/90 via-violet-500/80 to-indigo-500/80 text-white shadow-[0_0_30px_rgba(168,85,247,0.4)]";
+      return "border-[#cfa677] bg-gradient-to-br from-[#1b120c]/95 via-[#26170f]/90 to-[#3a2416]/85 text-[#f6e8d2] shadow-[0_0_35px_rgba(58,36,22,0.45)]";
   }
 }
 

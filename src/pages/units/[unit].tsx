@@ -89,8 +89,8 @@ type NewCriminalGroupInput = {
 
 const DEFAULT_CRIMINAL_GROUP_TEMPLATE = {
   name: "Ballas",
-  colorName: "Fioletowa",
-  colorHex: "#7c3aed",
+  colorName: "Brązowa",
+  colorHex: "#4a3323",
   organizationType: "Gang uliczny",
   base: "Grove Street",
   operations:
@@ -209,7 +209,7 @@ function MemberRow({ member, unit, manageableRanks, membershipRank, onSubmit, sa
           <label className="flex items-center gap-2">
             <input
               type="checkbox"
-              className="accent-blue-400"
+              className="accent-[#b7895a]"
               checked={membership}
               onChange={(e) => setMembership(e.target.checked)}
               disabled={saving}
@@ -266,7 +266,7 @@ function MemberRow({ member, unit, manageableRanks, membershipRank, onSubmit, sa
             <label key={option.value} className="flex items-center gap-2">
               <input
                 type="checkbox"
-                className="accent-blue-400"
+                className="accent-[#b7895a]"
                 checked={sortedSelectedRanks.includes(option.value)}
                 onChange={() => toggleRank(option.value)}
                 disabled={saving || !membership}
@@ -323,7 +323,7 @@ export default function UnitPanelPage() {
     name: "",
     title: "",
     colorName: "",
-    colorHex: "#7c3aed",
+    colorHex: "#4a3323",
     organizationType: "",
     base: "",
     operations: "",
@@ -841,7 +841,7 @@ export default function UnitPanelPage() {
                   <span className="section-chip">
                     <span
                       className="section-chip__dot"
-                      style={{ background: section ? section.navColor : "#38bdf8" }}
+                      style={{ background: section ? section.navColor : "#7a4f2f" }}
                       aria-hidden
                     />
                     Panel jednostki
@@ -955,7 +955,7 @@ export default function UnitPanelPage() {
                     <span className="section-chip">
                       <span
                         className="section-chip__dot"
-                        style={{ background: section ? section.navColor : "#38bdf8" }}
+                        style={{ background: section ? section.navColor : "#7a4f2f" }}
                         aria-hidden
                       />
                       Zarządzanie jednostką
@@ -1024,7 +1024,7 @@ export default function UnitPanelPage() {
 
                 {activeTab === "groups" && supportsCriminalGroups && canManage && (
                   <div className="grid gap-6">
-                    <div className="card bg-gradient-to-br from-fuchsia-900/85 via-indigo-900/80 to-slate-900/85 p-6 text-white shadow-xl">
+                    <div className="card bg-gradient-to-br from-[#24160e]/90 via-[#351f12]/85 to-[#4a2a18]/80 p-6 text-[#f6e8d2] shadow-xl">
                       <h2 className="text-xl font-semibold">Gang Unit — rejestr organizacji</h2>
                       <p className="text-sm text-white/70">
                         Zarządzaj profilem grup przestępczych obserwowanych przez GU. Dodawaj nowe wpisy i aktualizuj informacje operacyjne.
@@ -1059,7 +1059,7 @@ export default function UnitPanelPage() {
                           className="input bg-white"
                           value={groupForm.colorHex}
                           onChange={(e) => setGroupForm((prev) => ({ ...prev, colorHex: e.target.value }))}
-                          placeholder="#7c3aed"
+                          placeholder="#4a3323"
                           required
                         />
                         <span
@@ -1069,7 +1069,7 @@ export default function UnitPanelPage() {
                               ? groupForm.colorHex.startsWith("#")
                                 ? groupForm.colorHex
                                 : `#${groupForm.colorHex}`
-                              : "#7c3aed",
+                              : "#4a3323",
                           }}
                         />
                       </div>
@@ -1121,7 +1121,7 @@ export default function UnitPanelPage() {
                     <span className="text-xs text-slate-500">Pola oznaczone * są wymagane.</span>
                     <button
                       type="submit"
-                      className="btn bg-indigo-600 text-white hover:bg-indigo-500 disabled:opacity-60"
+                      className="btn bg-[#7a4f2f] text-[#f6e8d2] hover:bg-[#6a452d] disabled:opacity-60"
                       disabled={groupSaving}
                     >
                       {groupSaving ? "Zapisywanie..." : "Dodaj grupę"}
@@ -1144,12 +1144,12 @@ export default function UnitPanelPage() {
                 ) : (
                   <div className="grid gap-4 md:grid-cols-2">
                     {sortedCriminalGroups.map((group) => {
-                      const rawColor = group.group?.colorHex || "#7c3aed";
+                      const rawColor = group.group?.colorHex || "#4a3323";
                       const normalizedColor = /^#?[0-9a-fA-F]{6}$/i.test(rawColor)
                         ? rawColor.startsWith("#")
                           ? rawColor
                           : `#${rawColor}`
-                        : "#7c3aed";
+                        : "#4a3323";
                       const gradient = `linear-gradient(135deg, ${normalizedColor}33, rgba(15, 23, 42, 0.92))`;
                       const organizationName = group.group?.name || group.title || group.id;
                       return (
@@ -1257,7 +1257,7 @@ export default function UnitPanelPage() {
                             >
                               <input
                                 type="radio"
-                                className="accent-blue-400"
+                                className="accent-[#b7895a]"
                                 name="candidate"
                                 value={candidate.uid}
                                 checked={selectedCandidate === candidate.uid}
@@ -1291,7 +1291,7 @@ export default function UnitPanelPage() {
                           >
                             <input
                               type="checkbox"
-                              className="accent-blue-400"
+                              className="accent-[#b7895a]"
                               checked={candidateRanks.includes(option.value)}
                               onChange={() => toggleCandidateRank(option.value)}
                             />
