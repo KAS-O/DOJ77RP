@@ -14,27 +14,31 @@ export type UnitSectionConfig = {
 
 const BASE_UNIT_CONFIG: Record<
   InternalUnit,
-  { navColor: string; rankHierarchy: AdditionalRank[]; membershipRank: AdditionalRank | null }
+  { navColor: string; rankHierarchy: AdditionalRank[]; membershipRank: AdditionalRank | null; icon: string | null }
 > = {
   irs: {
     navColor: "#b77d4b",
     rankHierarchy: [],
     membershipRank: null,
+    icon: "irs.png",
   },
   sadownictwo: {
     navColor: "#8d6946",
     rankHierarchy: [],
     membershipRank: null,
+    icon: "sadownictwo.png",
   },
   prokuratura: {
     navColor: "#9b6a3c",
     rankHierarchy: [],
     membershipRank: null,
+    icon: "prokuratura.png",
   },
   palestra: {
     navColor: "#c48c5c",
     rankHierarchy: [],
     membershipRank: null,
+    icon: "palestra.png",
   },
 };
 
@@ -49,7 +53,7 @@ export const UNIT_SECTIONS: UnitSectionConfig[] = (Object.keys(BASE_UNIT_CONFIG)
     navColor: config.navColor,
     rankHierarchy: config.rankHierarchy.slice(),
     membershipRank: config.membershipRank,
-    icon: null,
+    icon: config.icon,
   };
 });
 

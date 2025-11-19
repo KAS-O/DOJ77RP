@@ -1771,7 +1771,7 @@ export default function Admin() {
           left={<UnitsPanel />}
           center={(
             <div className="card p-6 text-center">
-              Brak dostępu. Panel zarządu jest dostępny dla rang <b>Staff Commander</b> i wyższych.
+              Brak dostępu. Panel zarządu wymaga uprawnień administratora.
             </div>
           )}
           right={<AccountPanel />}

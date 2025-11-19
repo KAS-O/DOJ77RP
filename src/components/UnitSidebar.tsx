@@ -312,13 +312,21 @@ export default function UnitSidebar({
               >
                 <div className="flex items-center gap-3">
                   <div
-                    className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl border border-white/10 text-sm font-semibold uppercase tracking-wide text-white/90"
+                    className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl border border-white/10 bg-black/30 text-sm font-semibold uppercase tracking-wide text-white/90"
                     style={{
                       background: `linear-gradient(145deg, ${section.navColor}, rgba(12,8,5,0.85))`,
                       boxShadow: isActive ? `0 12px 24px -18px ${section.navColor}` : undefined,
                     }}
                   >
-                    {section.shortLabel}
+                    {section.icon ? (
+                      <img
+                        src={`/unit-logos/${section.icon}`}
+                        alt={`Logo ${section.label}`}
+                        className="h-7 w-7 object-contain drop-shadow"
+                      />
+                    ) : (
+                      <span>{section.shortLabel}</span>
+                    )}
                   </div>
                   <div className="flex flex-col">
                     <span className="text-sm font-semibold text-white">{section.label}</span>
