@@ -1,0 +1,223 @@
+// Firestore security rules
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function profile(uid) {
+      return get(/databases/$(database)/documents/profiles/$(uid)).data;
+    }
+
+    function roleOf(uid) {
+      return profile(uid).role;
+    }
+
+    function hasAdminPrivileges() {
+      return signedIn() && profile(request.auth.uid).adminPrivileges == true;
+    }
+
+    function canManageAdminPrivileges() {
+      if (!signedIn()) return false;
+      let r = roleOf(request.auth.uid);
+      return r == "admin" || r == "director" || r == "chief-of-police";
+    }
+
+    function adminPrivilegeCreateAllowed() {
+      return !(request.resource.data.adminPrivileges == true) || canManageAdminPrivileges();
+    }
+
+    function adminPrivilegeUpdateAllowed() {
+      let current = resource.data.adminPrivileges == true;
+      let next = request.resource.data.adminPrivileges == true;
+      if (current == next) {
+        return true;
+      }
+      return canManageAdminPrivileges();
+    }
+
+    function isBoard() {
+      if (!signedIn()) return false;
+      let data = profile(request.auth.uid);
+      let r = data.role;
+      return (
+        r == "staff-commander" ||
+        r == "executive-commander" ||
+        r == "deputy-chief" ||
+        r == "assistant-chief" ||
+        r == "chief-of-police" ||
+        r == "director" ||
+        r == "admin" ||
+        data.adminPrivileges == true
+      );
+    }
+
+    function isStaff() {
+      if (!signedIn()) return false;
+      let r = roleOf(request.auth.uid);
+      return (
+        r == "cadet" ||
+        r == "solo-cadet" ||
+        r == "officer-i" ||
+        r == "officer-ii" ||
+        r == "officer-iii" ||
+        r == "officer-iii-plus-i" ||
+        r == "sergeant-i" ||
+        r == "sergeant-ii" ||
+        r == "sergeant-iii" ||
+        r == "lieutenant-i" ||
+        r == "lieutenant-ii" ||
+        r == "captain-i" ||
+        r == "captain-ii" ||
+        r == "captain-iii" ||
+        r == "staff-commander" ||
+        r == "executive-commander" ||
+        r == "deputy-chief" ||
+        r == "assistant-chief" ||
+        r == "chief-of-police" ||
+        r == "director" ||
+        r == "admin" ||
+        hasAdminPrivileges()
+      );
+    }
+
+    function isOfficer() {
+      if (hasAdminPrivileges()) return true;
+      if (!signedIn()) return false;
+      let r = roleOf(request.auth.uid);
+      return r != "cadet" && r != "solo-cadet";
+    }
+
+    function vehicleFolderProtectedFieldsUnchanged() {
+      return request.resource.data.createdBy == resource.data.createdBy &&
+        request.resource.data.createdByUid == resource.data.createdByUid &&
+        request.resource.data.createdAt == resource.data.createdAt;
+    }
+
+    function vehicleNotePaymentOnlyUpdate() {
+      return request.resource.data.diff(resource.data).changedKeys().hasOnly([
+        "paymentStatus",
+        "paymentStatusMessage",
+        "paymentResolvedAt",
+        "paymentResolvedBy",
+        "paymentResolvedByUid",
+        "paymentCredited"
+      ]);
+    }
+
+    function isCriminalGroupContext() {
+      return (resource.data.category == "criminal-group") ||
+        (request.resource.data.category == "criminal-group");
+    }
+
+    function isCriminalGroupDossier(dossierId) {
+      return get(/databases/$(database)/documents/dossiers/$(dossierId)).data.category == "criminal-group";
+    }
+
+    function isGroupRosterRecord() {
+      let t = request.resource.data.type;
+      return t == "member" || t == "vehicle";
+    }
+
+    // profile
+    match /profiles/{uid} {
+      allow read: if signedIn();
+      // panel kadr: dowództwo może tworzyć profile dla innych użytkowników
+      allow create: if signedIn() && (uid == request.auth.uid || isBoard()) && adminPrivilegeCreateAllowed();
+      allow update: if (isBoard() || (signedIn() && uid == request.auth.uid)) && adminPrivilegeUpdateAllowed();
+      allow delete: if isBoard();
+
+      match /counters/{counterId} {
+        allow read, write: if isBoard();
+      }
+    }
+
+    // presence (heartbeat)
+    match /presence/{uid} {
+      allow read: if signedIn() && (uid == request.auth.uid || isStaff());
+      allow create, update: if signedIn() && uid == request.auth.uid;
+      allow delete: if isBoard();
+    }
+
+    // konto główne (dla kompatybilności z panelem)
+    match /accounts/{docId} {
+      allow read, write: if isBoard();
+    }
+
+    // archiwum dokumentów
+    match /archives/{id} {
+      allow create: if signedIn();
+      allow read:   if isStaff();
+      allow update: if isBoard();
+      allow delete: if isBoard();
+    }
+
+    // teczki + wpisy
+    match /dossiers/{dossierId} {
+      allow read: if signedIn();
+      allow create: if signedIn();
+      allow update: if isBoard() ||
+        isOfficer() ||
+        (signedIn() && resource.data.createdByUid == request.auth.uid) ||
+        (isStaff() && isCriminalGroupContext());
+      allow delete: if isOfficer() && resource.data.category != "criminal-group";
+
+      match /records/{recordId} {
+        allow read: if signedIn();
+        allow create: if signedIn() && (!isGroupRosterRecord() || isStaff());
+        allow update, delete: if isBoard() ||
+          isOfficer() ||
+          (signedIn() && resource.data.authorUid == request.auth.uid) ||
+          (isStaff() && isCriminalGroupDossier(dossierId));
+      }
+    }
+
+    // *** NOWE: zarządzanie teczkami pojazdów ***
+    match /vehicleFolders/{vehicleId} {
+      allow read: if isStaff();
+      allow create: if isStaff();
+      allow update: if isBoard() ||
+        (isStaff() && vehicleFolderProtectedFieldsUnchanged());
+      allow delete: if isBoard() ||
+        (signedIn() && request.auth.uid == resource.data.createdByUid);
+
+      match /notes/{noteId} {
+        allow read, create: if isStaff();
+        allow update: if isBoard() ||
+          (signedIn() && request.auth.uid == resource.data.authorUid) ||
+          (isStaff() && vehicleNotePaymentOnlyUpdate());
+        allow delete: if isBoard() ||
+          (signedIn() && request.auth.uid == resource.data.authorUid);
+      }
+    }
+    // *** KONIEC BLOKU vehicleFolders ***
+
+    // logi
+    match /logs/{logId} {
+      allow create: if signedIn();
+      allow get, list: if isBoard();
+    }
+
+    // finanse (starszy namespace) + podkolekcja accounts
+    match /finance/{docId} {
+      allow read, write: if isBoard();
+
+      match /accounts/{accountId} {
+        allow read, write: if isBoard();
+      }
+    }
+
+    // konfiguracje
+    match /configs/{configId} {
+      allow read: if signedIn();
+      allow write: if isBoard();
+    }
+
+    // domyślnie: pełen dostęp tylko dla dowództwa
+    match /{document=**} {
+      allow read, write: if isBoard();
+    }
+  }
+}
