@@ -29,7 +29,12 @@ Reguły obejmują m.in. możliwość zakładania teczek (`/dossiers/{id}`) przez
 
 ## Jednostki DOJ
 - Aktywne jednostki: IRS, Sądownictwo, Prokuratura, Palestra Adwokacka.
-- Wszystkie jednostki mają tekstowe identyfikatory (bez logotypów) i wspólne, beżowo‑brązowe oznaczenia w interfejsie.
+- Jednostki korzystają z ikon PNG umieszczonych w `public/unit-logos/`. Przygotuj pliki:
+  - `irs.png`
+  - `sadownictwo.png`
+  - `prokuratura.png`
+  - `palestra.png`
+- Jeśli ikony nie są dostępne, panel automatycznie pokaże skróconą nazwę jednostki.
 - Role dodatkowe (np. Koordynator IRS, Przewodniczący Sądownictwa) można przypisywać z poziomu panelu kadr.
 
 ## Dział kadr i konta użytkowników
