@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { Role, ROLE_VALUES, normalizeRole, hasBoardAccess, canAssignAdminPrivileges } from "@/lib/roles";
+import { Role, normalizeRole, hasBoardAccess, canAssignAdminPrivileges } from "@/lib/roles";
 import {
   type Department,
   type InternalUnit,
@@ -33,7 +33,6 @@ type AccountResponse = {
   role: Role;
   email: string;
   createdAt?: string;
-  badgeNumber?: string;
   department?: Department | null;
   units?: InternalUnit[];
   additionalRanks?: AdditionalRank[];
@@ -48,7 +47,6 @@ async function listFirestoreProfiles(idToken: string): Promise<AccountResponse[]
     const loginRaw = typeof payload.login === "string" ? payload.login.trim() : "";
     const login = loginRaw || (payload.email ? String(payload.email).split("@")[0] : "") || uid || "";
     const role = normalizeRole(payload.role);
-    const badgeNumber = typeof payload.badgeNumber === "string" ? payload.badgeNumber.trim() : undefined;
     const createdAt = typeof payload.createdAt === "string" ? payload.createdAt : undefined;
     const fullName = typeof payload.fullName === "string" ? payload.fullName : undefined;
     const department = normalizeDepartment(payload.department);
@@ -60,7 +58,6 @@ async function listFirestoreProfiles(idToken: string): Promise<AccountResponse[]
       fullName,
       role,
       email: login ? `${login}@${process.env.NEXT_PUBLIC_LOGIN_DOMAIN || "dps.local"}` : "",
-      ...(badgeNumber ? { badgeNumber } : {}),
       ...(createdAt ? { createdAt } : {}),
       department: department ?? null,
       units,
@@ -72,15 +69,6 @@ async function listFirestoreProfiles(idToken: string): Promise<AccountResponse[]
 
   accounts.sort((a, b) => (a.fullName || a.login).localeCompare(b.fullName || b.login, "pl", { sensitivity: "base" }));
   return accounts;
-}
-
-const ROLE_RANK = new Map<Role, number>(ROLE_VALUES.map((value, index) => [value, index]));
-
-function getRoleRank(role: Role | null | undefined): number {
-  if (!role) {
-    return -1;
-  }
-  return ROLE_RANK.get(role) ?? -1;
 }
 
 async function createFirestoreProfile(uid: string, fields: Record<string, any>, idToken: string) {
@@ -120,13 +108,6 @@ function validateLogin(login: string) {
   }
 }
 
-function validateBadge(badge: string) {
-  const pattern = /^[0-9]{1,6}$/;
-  if (!pattern.test(badge)) {
-    throw Object.assign(new Error("Numer odznaki powinien zawierać od 1 do 6 cyfr."), { status: 400 });
-  }
-}
-
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === "OPTIONS") {
     res.setHeader("Allow", "GET,POST,PATCH,OPTIONS");
@@ -148,18 +129,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     if (req.method === "POST") {
-      const {
-        login,
-        fullName,
-        role,
-        password,
-        badgeNumber,
-        department,
-        units,
-        additionalRanks,
-        additionalRank,
-        adminPrivileges,
-      } = req.body || {};
+      const { login, fullName, role, password, department, units, additionalRanks, additionalRank, adminPrivileges } =
+        req.body || {};
       if (!login || !password) {
         return res.status(400).json({ error: "Login i hasło są wymagane" });
       }
@@ -168,12 +139,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       if (String(password).length < 6) {
         return res.status(400).json({ error: "Hasło musi mieć co najmniej 6 znaków." });
       }
-      const normalizedBadge = typeof badgeNumber === "string" ? badgeNumber.trim() : "";
-      if (!normalizedBadge) {
-        return res.status(400).json({ error: "Numer odznaki jest wymagany." });
-      }
-      validateBadge(normalizedBadge);
-
       const normalizedDepartment = normalizeDepartment(department);
       if (!normalizedDepartment) {
         return res.status(400).json({ error: "Wybierz poprawny departament." });
@@ -182,9 +147,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const normalizedUnits = normalizeInternalUnits(units);
       const normalizedAdditionalRanks = normalizeAdditionalRanks(additionalRanks ?? additionalRank);
       const desiredRole = normalizeRole(role);
-      if (requesterRole !== "admin" && getRoleRank(desiredRole) > getRoleRank(requesterRole)) {
-        return res.status(403).json({ error: "Nie możesz utworzyć konta z rangą wyższą niż Twoja." });
-      }
       for (const rank of normalizedAdditionalRanks) {
         const rankOption = getAdditionalRankOption(rank);
         if (rankOption && !normalizedUnits.includes(rankOption.unit)) {
@@ -218,7 +180,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           login: normalizedLogin,
           fullName: displayName,
           role: desiredRole,
-          badgeNumber: normalizedBadge,
           department: normalizedDepartment,
           units: normalizedUnits,
           additionalRanks: normalizedAdditionalRanks,
@@ -234,17 +195,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     if (req.method === "PATCH") {
-      const {
-        uid,
-        fullName,
-        role,
-        badgeNumber,
-        department,
-        units,
-        additionalRanks,
-        additionalRank,
-        adminPrivileges,
-      } = req.body || {};
+      const { uid, fullName, role, department, units, additionalRanks, additionalRank, adminPrivileges } = req.body || {};
       if (!uid) {
         return res.status(400).json({ error: "Brak UID" });
       }
@@ -253,10 +204,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return res.status(404).json({ error: "Nie znaleziono konta." });
       }
       const profileData = decodeFirestoreDocument(profileDoc);
-      const currentRole = normalizeRole(profileData.role);
-      const requesterRank = getRoleRank(requesterRole);
-      const targetRank = getRoleRank(currentRole);
-      const isAdminRequester = requesterRole === "admin";
       const updates: Record<string, any> = {};
       if (typeof fullName === "string") {
         const trimmed = fullName.trim();
@@ -266,21 +213,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
       if (role !== undefined) {
         const desiredRole = normalizeRole(role);
-        if (!isAdminRequester && targetRank > requesterRank) {
-          return res.status(403).json({ error: "Nie możesz zmienić rangi funkcjonariusza z wyższą rangą." });
-        }
-        if (!isAdminRequester && getRoleRank(desiredRole) > requesterRank) {
-          return res.status(403).json({ error: "Nie możesz nadać rangi wyższej niż Twoja." });
-        }
         updates.role = desiredRole;
-      }
-      if (badgeNumber !== undefined) {
-        const normalizedBadge = String(badgeNumber).trim();
-        if (!normalizedBadge) {
-          return res.status(400).json({ error: "Numer odznaki jest wymagany." });
-        }
-        validateBadge(normalizedBadge);
-        updates.badgeNumber = normalizedBadge;
       }
       if (department !== undefined) {
         const normalizedDepartment = normalizeDepartment(department);

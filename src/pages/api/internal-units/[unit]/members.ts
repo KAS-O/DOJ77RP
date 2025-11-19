@@ -33,7 +33,6 @@ type UnitMember = {
   login: string;
   fullName: string;
   role: Role;
-  badgeNumber?: string;
   department: Department | null;
   units: InternalUnit[];
   additionalRanks: AdditionalRank[];
@@ -57,7 +56,8 @@ async function ensureUnitAccess(req: NextApiRequest, unit: InternalUnit) {
   const profileDoc = await fetchFirestoreDocument(`profiles/${user.localId}`, idToken);
   const profileData = decodeFirestoreDocument(profileDoc);
   const role = normalizeRole(profileData.role);
-  if (isHighCommand(role)) {
+  const adminPrivileges = profileData.adminPrivileges === true;
+  if (adminPrivileges || isHighCommand(role)) {
     const config = getUnitSection(unit);
     if (!config) {
       throw Object.assign(new Error("Jednostka nie obsługuje uprawnień."), { status: 404 });
@@ -109,7 +109,6 @@ function buildMember(doc: any): UnitMember {
   const department = normalizeDepartment(payload.department) ?? null;
   const units = normalizeInternalUnits(payload.units);
   const additionalRanks = normalizeAdditionalRanks(payload.additionalRanks ?? payload.additionalRank);
-  const badgeNumber = typeof payload.badgeNumber === "string" ? payload.badgeNumber.trim() : undefined;
   return {
     uid,
     login,
@@ -118,7 +117,6 @@ function buildMember(doc: any): UnitMember {
     department,
     units,
     additionalRanks,
-    ...(badgeNumber ? { badgeNumber } : {}),
   };
 }
 

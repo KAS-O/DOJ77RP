@@ -11,7 +11,7 @@ import UnitSidebar from "@/components/UnitSidebar";
 
 const NAV_LINKS: { href: string; label: string; color: string }[] = [
   { href: "/dashboard", label: "Dokumenty", color: "#c49a6a" },
-  { href: "/chain-of-command", label: "Chain of Command", color: "#8d6b4c" },
+  { href: "/chain-of-command", label: "Skład departamentu", color: "#8d6b4c" },
   { href: "/dossiers", label: "Teczki", color: "#a57a52" },
   { href: "/vehicle-archive", label: "Archiwum pojazdów", color: "#d8b38a" },
 ];
@@ -57,7 +57,7 @@ export default function Nav({ showSidebars = true }: NavProps) {
   const adminActive = router.pathname.startsWith("/admin");
   const currentPath = router.asPath;
   const unitLinks = UNIT_SECTIONS.filter((section) =>
-    unitHasAccess(section.unit, additionalRanks, role, units)
+    unitHasAccess(section.unit, additionalRanks, role, units, adminPrivileges)
   );
 
   const logout = async () => {

@@ -33,13 +33,13 @@ Reguły obejmują m.in. możliwość zakładania teczek (`/dossiers/{id}`) przez
 - Role dodatkowe (np. Koordynator IRS, Przewodniczący Sądownictwa) można przypisywać z poziomu panelu kadr.
 
 ## Dział kadr i konta użytkowników
-- Przy zakładaniu kont wymagany jest **numer odznaki** (1–6 cyfr). Numer można też edytować dla istniejących profili – pole jest przechowywane w kolekcji `profiles` jako `badgeNumber`.
+- Przy zakładaniu kont wymagane są jedynie login i hasło – pozostałe informacje (np. ranga, przypisania jednostek) można nadać później z poziomu panelu kadr.
 - Panel kadrowy korzysta z REST API Firebase (`Identity Toolkit`) oraz kolekcji `profiles` w Firestore – nie jest już wymagane konfigurowanie Firebase Admin SDK na serwerze.
 - W środowisku produkcyjnym upewnij się, że dostępne są zmienne środowiskowe:
   - `NEXT_PUBLIC_FIREBASE_API_KEY` (możesz opcjonalnie ustawić kopię w `FIREBASE_REST_API_KEY`),
   - `NEXT_PUBLIC_FIREBASE_PROJECT_ID` (lub osobno `FIREBASE_REST_PROJECT_ID`).
 - Po wdrożeniu zmian zaktualizuj reguły Firestore poleceniem `firebase deploy --only firestore:rules` – nowa wersja pozwala kadrze dowódczej (`isBoard()`) tworzyć profile innych użytkowników.
-- Tworzenie kont odbywa się w pełni z poziomu panelu – po wprowadzeniu loginu, hasła i numeru odznaki profil zostaje automatycznie dopisany do kolekcji `profiles`.
+- Tworzenie kont odbywa się w pełni z poziomu panelu – po wprowadzeniu loginu i hasła profil zostaje automatycznie dopisany do kolekcji `profiles`.
 - Resetowanie haseł lub usuwanie kont wymaga użycia konsoli Firebase (np. zakładki **Authentication**) – panel wyświetla linki i umożliwia edycję danych profilowych, ale nie usuwa kont z Firebase Auth.
 
 ## Zmiany w v2

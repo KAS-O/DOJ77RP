@@ -78,18 +78,7 @@ export default function UnitSidebar({
   showUnitsPanel = true,
   showProfilePanel = true,
 }: UnitSidebarProps) {
-  const {
-    role,
-    login,
-    fullName,
-    badgeNumber,
-    units,
-    additionalRanks,
-    photoURL,
-    photoPath,
-    adminPrivileges,
-    ready,
-  } = useProfile();
+  const { role, login, fullName, units, additionalRanks, photoURL, photoPath, adminPrivileges, ready } = useProfile();
   const router = useRouter();
   const { prompt, alert, confirm } = useDialog();
   const [uploadState, setUploadState] = useState<UploadState>("idle");
@@ -97,9 +86,9 @@ export default function UnitSidebar({
 
   const accessibleSections = useMemo(() => {
     return UNIT_SECTIONS.filter((section) =>
-      unitHasAccess(section.unit, additionalRanks, role, units)
+      unitHasAccess(section.unit, additionalRanks, role, units, adminPrivileges)
     ).sort((a, b) => a.label.localeCompare(b.label, "pl", { sensitivity: "base" }));
-  }, [additionalRanks, role, units]);
+  }, [additionalRanks, adminPrivileges, role, units]);
 
   const membershipUnits = useMemo(() => {
     const unitSet = new Set<InternalUnit>();
@@ -266,7 +255,6 @@ export default function UnitSidebar({
         authorUid: user.uid,
         authorLogin: login || null,
         authorFullName: fullName || null,
-        authorBadgeNumber: badgeNumber || null,
         authorRole: role || null,
         authorRoleLabel: role ? ROLE_LABELS[role] || role : null,
         authorRoleGroup: groupLabel || null,
@@ -387,7 +375,6 @@ export default function UnitSidebar({
             <p className="text-xs uppercase tracking-wide text-white/60">{groupLabel || "Brak grupy"}</p>
             <p className="text-xs text-white/60">Login: {login || "—"}</p>
             <p className="text-xs text-white/60">Stopień: {roleLabel}</p>
-            <p className="text-xs text-white/60">Numer odznaki: {badgeNumber ? `#${badgeNumber}` : "Brak"}</p>
             {highestRanks.length > 0 && (
               <p className="text-xs text-white/60">Dodatkowe rangi: {highestRanks.join(", ")}</p>
             )}

@@ -63,9 +63,10 @@ export function unitHasAccess(
   unit: InternalUnit,
   ranks: AdditionalRank[] | null | undefined,
   role?: Role | null | undefined,
-  memberships?: InternalUnit[] | null | undefined
+  memberships?: InternalUnit[] | null | undefined,
+  adminPrivileges = false
 ): boolean {
-  if (isHighCommand(role)) {
+  if (adminPrivileges || isHighCommand(role)) {
     return true;
   }
   const membershipList = Array.isArray(memberships) ? memberships : [];
