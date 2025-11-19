@@ -49,11 +49,11 @@ const DialogContext = createContext<DialogContextValue | null>(null);
 function toneClasses(tone: DialogTone | undefined) {
   switch (tone) {
     case "danger":
-      return "border-red-400 bg-gradient-to-br from-rose-600/90 via-rose-500/80 to-red-500/80 text-white shadow-[0_0_30px_rgba(220,38,38,0.4)]";
+      return "border-[#8c402a] bg-gradient-to-br from-[#3c150c]/95 via-[#1e0a06]/90 to-[#080302]/90 text-beige-900 shadow-[0_0_30px_rgba(54,27,16,0.65)]";
     case "info":
-      return "border-sky-400 bg-gradient-to-br from-sky-500/90 via-blue-500/80 to-indigo-500/80 text-white shadow-[0_0_30px_rgba(14,165,233,0.4)]";
+      return "border-[#6f4b2f] bg-gradient-to-br from-[#2e1e13]/95 via-[#190f09]/90 to-[#050302]/90 text-beige-900 shadow-[0_0_30px_rgba(42,27,16,0.6)]";
     default:
-      return "border-purple-400 bg-gradient-to-br from-purple-600/90 via-violet-500/80 to-indigo-500/80 text-white shadow-[0_0_30px_rgba(168,85,247,0.4)]";
+      return "border-[#b48c60] bg-gradient-to-br from-[#3b2718]/95 via-[#1b120b]/90 to-[#080403]/90 text-beige-900 shadow-[0_0_30px_rgba(28,18,11,0.65)]";
   }
 }
 
@@ -207,13 +207,13 @@ export function DialogProvider({ children }: { children: ReactNode }) {
             <div className="rounded-3xl bg-black/30 p-6">
               <div className="flex items-start justify-between gap-4">
                 <div>
-                  {dialog.title && <h2 className="text-2xl font-semibold drop-shadow-sm">{dialog.title}</h2>}
-                  <p className="mt-3 text-sm leading-relaxed text-white/90 whitespace-pre-wrap">{dialog.message}</p>
+                  {dialog.title && <h2 className="text-2xl font-semibold text-beige-900 drop-shadow-sm">{dialog.title}</h2>}
+                  <p className="mt-3 text-sm leading-relaxed text-beige-900 whitespace-pre-wrap">{dialog.message}</p>
                 </div>
                 <button
                   type="button"
                   onClick={onCancel}
-                  className="text-white/80 hover:text-white focus:outline-none"
+                  className="text-beige-900/70 hover:text-beige-900 focus:outline-none"
                   aria-label="Zamknij"
                 >
                   ✕
@@ -222,10 +222,10 @@ export function DialogProvider({ children }: { children: ReactNode }) {
 
               {dialog.type === "prompt" && (
                 <div className="mt-4">
-                  {dialog.inputLabel && <label className="mb-2 block text-sm font-semibold text-white/90">{dialog.inputLabel}</label>}
+                  {dialog.inputLabel && <label className="mb-2 block text-sm font-semibold text-beige-900">{dialog.inputLabel}</label>}
                   {dialog.multiline ? (
                     <textarea
-                      className="w-full rounded-2xl border border-white/30 bg-black/40 px-4 py-3 text-sm text-white shadow-inner focus:border-white focus:outline-none focus:ring-2 focus:ring-white/70"
+                      className="w-full rounded-2xl border border-beige-900/40 bg-black/40 px-4 py-3 text-sm text-beige-900 shadow-inner focus:border-beige-900 focus:outline-none focus:ring-2 focus:ring-beige-900/70"
                       rows={8}
                       value={dialog.value}
                       placeholder={dialog.placeholder}
@@ -237,7 +237,7 @@ export function DialogProvider({ children }: { children: ReactNode }) {
                     />
                   ) : (
                     <input
-                      className="w-full rounded-2xl border border-white/30 bg-black/40 px-4 py-3 text-sm text-white shadow-inner focus:border-white focus:outline-none focus:ring-2 focus:ring-white/70"
+                      className="w-full rounded-2xl border border-beige-900/40 bg-black/40 px-4 py-3 text-sm text-beige-900 shadow-inner focus:border-beige-900 focus:outline-none focus:ring-2 focus:ring-beige-900/70"
                       value={dialog.value}
                       placeholder={dialog.placeholder}
                       onChange={(e) =>
@@ -254,7 +254,7 @@ export function DialogProvider({ children }: { children: ReactNode }) {
                 {dialog.type !== "alert" && (
                   <button
                     type="button"
-                    className="btn border-white/30 bg-white/10 text-white hover:bg-white/20"
+                    className="btn border-beige-900/40 bg-black/30 text-beige-900 hover:bg-black/40"
                     onClick={onCancel}
                   >
                     {dialog.cancelLabel || "Anuluj"}
@@ -262,8 +262,10 @@ export function DialogProvider({ children }: { children: ReactNode }) {
                 )}
                 <button
                   type="button"
-                  className={`btn border-transparent bg-white text-base font-semibold text-black hover:bg-white/90 ${
-                    dialog.tone === "danger" ? "bg-red-200 text-red-900 hover:bg-red-100" : ""
+                  className={`btn border-transparent text-base font-semibold ${
+                    dialog.tone === "danger"
+                      ? "bg-[#5b2819] text-beige-900 hover:bg-[#4a2114]"
+                      : "bg-beige-900 text-black hover:bg-beige-800"
                   }`}
                   onClick={onConfirm}
                 >

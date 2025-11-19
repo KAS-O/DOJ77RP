@@ -57,7 +57,7 @@ export default function VehicleArchivePage() {
   const { confirm } = useDialog();
   const { session, logActivity } = useSessionActivity();
   const { writeLog } = useLogWriter();
-  const accentColor = "#0ea5e9";
+  const accentColor = "#8a6d45";
   const viewLoggedRef = useRef(false);
 
   useEffect(() => {
@@ -220,8 +220,16 @@ export default function VehicleArchivePage() {
                     onChange={(e) => setSearch(e.target.value)}
                   />
                 </div>
-                {err && <div className="card bg-red-50 text-red-700 p-3 mb-3" data-section="vehicle">{err}</div>}
-                {ok && <div className="card bg-green-50 text-green-700 p-3 mb-3" data-section="vehicle">{ok}</div>}
+                {err && (
+                  <div className="card p-3 mb-3 border border-red-900/40 bg-[#2a1410] text-beige-900" data-section="vehicle">
+                    {err}
+                  </div>
+                )}
+                {ok && (
+                  <div className="card p-3 mb-3 border border-beige-900/30 bg-[#1a120b] text-beige-900" data-section="vehicle">
+                    {ok}
+                  </div>
+                )}
                 <div className="grid gap-3">
                   {filtered.map((vehicle) => {
                     const highlight = getVehicleHighlightStyle(vehicle.statuses);
@@ -236,7 +244,7 @@ export default function VehicleArchivePage() {
                       <a
                         key={vehicle.id}
                         href={`/vehicle-archive/${vehicle.id}`}
-                        className="card p-5 transition hover:-translate-y-0.5 text-white"
+                        className="card p-5 transition hover:-translate-y-0.5 text-beige-900"
                         data-section="vehicle"
                         style={style}
                       >
@@ -245,14 +253,14 @@ export default function VehicleArchivePage() {
                             <span aria-hidden>🚔</span>
                             {vehicle.registration}
                           </div>
-                          <span className="text-xs uppercase tracking-[0.35em] text-white/70">
+                          <span className="text-xs uppercase tracking-[0.35em] text-beige-900/70">
                             {vehicle.createdAt?.toDate?.()?.toLocaleDateString?.() || "—"}
                           </span>
                         </div>
-                        <div className="text-sm text-white/80">
+                        <div className="text-sm text-beige-900/80">
                           {vehicle.brand} • Kolor: {vehicle.color}
                         </div>
-                        <div className="text-xs text-white/70">Właściciel: {vehicle.ownerName} • CID: {vehicle.ownerCid || "—"}</div>
+                        <div className="text-xs text-beige-900/70">Właściciel: {vehicle.ownerName} • CID: {vehicle.ownerCid || "—"}</div>
                         {activeFlags.length > 0 && (
                           <div className="mt-3 flex flex-wrap gap-2">
                             {activeFlags.map((flag) => (
@@ -267,7 +275,7 @@ export default function VehicleArchivePage() {
                         )}
                         <div className="mt-4 flex justify-end">
                           <button
-                            className="btn bg-red-700 text-white"
+                            className="btn bg-red-900 text-white"
                             onClick={(e) => {
                               e.preventDefault();
                               e.stopPropagation();
@@ -282,7 +290,7 @@ export default function VehicleArchivePage() {
                     );
                   })}
                   {filtered.length === 0 && (
-                    <div className="card p-4 text-sm text-white/75" data-section="vehicle">
+                    <div className="card p-4 text-sm text-beige-900/80" data-section="vehicle">
                       Brak pojazdów w archiwum spełniających kryteria.
                     </div>
                   )}

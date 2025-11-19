@@ -22,7 +22,7 @@ service cloud.firestore {
     function canManageAdminPrivileges() {
       if (!signedIn()) return false;
       let r = roleOf(request.auth.uid);
-      return r == "admin" || r == "director" || r == "chief-of-police";
+      return r == "admin";
     }
 
     function adminPrivilegeCreateAllowed() {
@@ -43,13 +43,9 @@ service cloud.firestore {
       let data = profile(request.auth.uid);
       let r = data.role;
       return (
-        r == "staff-commander" ||
-        r == "executive-commander" ||
-        r == "deputy-chief" ||
-        r == "assistant-chief" ||
-        r == "chief-of-police" ||
-        r == "director" ||
         r == "admin" ||
+        r == "sedzia-najwyzszy" ||
+        r == "prokurator-generalny" ||
         data.adminPrivileges == true
       );
     }
@@ -58,27 +54,15 @@ service cloud.firestore {
       if (!signedIn()) return false;
       let r = roleOf(request.auth.uid);
       return (
-        r == "cadet" ||
-        r == "solo-cadet" ||
-        r == "officer-i" ||
-        r == "officer-ii" ||
-        r == "officer-iii" ||
-        r == "officer-iii-plus-i" ||
-        r == "sergeant-i" ||
-        r == "sergeant-ii" ||
-        r == "sergeant-iii" ||
-        r == "lieutenant-i" ||
-        r == "lieutenant-ii" ||
-        r == "captain-i" ||
-        r == "captain-ii" ||
-        r == "captain-iii" ||
-        r == "staff-commander" ||
-        r == "executive-commander" ||
-        r == "deputy-chief" ||
-        r == "assistant-chief" ||
-        r == "chief-of-police" ||
-        r == "director" ||
         r == "admin" ||
+        r == "sedzia-najwyzszy" ||
+        r == "sedzia" ||
+        r == "asystent-sedziego" ||
+        r == "prokurator-generalny" ||
+        r == "prokurator" ||
+        r == "asesor-prokuratora" ||
+        r == "irs" ||
+        r == "adwokat" ||
         hasAdminPrivileges()
       );
     }
@@ -86,8 +70,7 @@ service cloud.firestore {
     function isOfficer() {
       if (hasAdminPrivileges()) return true;
       if (!signedIn()) return false;
-      let r = roleOf(request.auth.uid);
-      return r != "cadet" && r != "solo-cadet";
+      return isStaff();
     }
 
     function vehicleFolderProtectedFieldsUnchanged() {

@@ -942,8 +942,8 @@ export default function DocPage() {
                   <button className="btn" disabled={sending || (requiresDossier && !dossierId)}>
                     {sending ? "Wysyłanie..." : "Wyślij do ARCHIWUM (obraz + tekst)"}
                   </button>
-                  {ok && <p className="text-green-700 text-sm">{ok}</p>}
-                  {err && <p className="text-red-700 text-sm">{err}</p>}
+                  {ok && <p className="text-sm text-beige-900">{ok}</p>}
+                  {err && <p className="text-sm text-red-300">{err}</p>}
                 </form>
               </div>
             </section>

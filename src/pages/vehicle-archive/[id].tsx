@@ -458,11 +458,19 @@ export default function VehicleFolderPage() {
         <Head><title>DOJ 77RP — {title}</title></Head>
         <Nav />
         <div className="max-w-5xl mx-auto px-4 py-6 grid gap-4">
-          {err && <div className="card p-3 bg-red-50 text-red-700" data-section="vehicle">{err}</div>}
-          {ok && <div className="card p-3 bg-green-50 text-green-700" data-section="vehicle">{ok}</div>}
+          {err && (
+            <div className="card p-3 border border-red-900/40 bg-[#2a1410] text-beige-900" data-section="vehicle">
+              {err}
+            </div>
+          )}
+          {ok && (
+            <div className="card p-3 border border-beige-900/30 bg-[#1a120b] text-beige-900" data-section="vehicle">
+              {ok}
+            </div>
+          )}
 
           <div
-            className="card p-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between text-white"
+            className="card p-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between text-beige-900"
             data-section="vehicle"
             style={headerStyle}
           >
@@ -476,11 +484,11 @@ export default function VehicleFolderPage() {
                   <span aria-hidden>🚔</span>
                   {vehicle?.registration || "Teczka pojazdu"}
                 </h1>
-                <div className="text-sm text-white/75">
+                <div className="text-sm text-beige-900/80">
                   Aktualizacja: {vehicle?.updatedAt?.toDate?.()?.toLocaleString?.() || vehicle?.createdAt?.toDate?.()?.toLocaleString?.() || "—"}
                 </div>
                 {ownerDossierId && (
-                  <div className="mt-1 text-sm text-white/70">
+                  <div className="mt-1 text-sm text-beige-900/70">
                     Powiązana teczka osoby:{" "}
                     <a className="underline" href={`/dossiers/${ownerDossierId}`}>
                       zobacz dossier
@@ -498,7 +506,7 @@ export default function VehicleFolderPage() {
                 </div>
               )}
             </div>
-            <button className="btn bg-red-700 text-white" onClick={deleteVehicle} disabled={deleting}>
+            <button className="btn bg-red-900 text-white" onClick={deleteVehicle} disabled={deleting}>
               {deleting ? "Usuwanie..." : "Usuń teczkę"}
             </button>
           </div>
@@ -552,8 +560,12 @@ export default function VehicleFolderPage() {
                 return (
                   <button
                     key={flag.key}
-                    className={`btn w-full flex flex-col items-start gap-1 text-left ${active ? "text-white" : ""}`}
-                    style={active ? { background: flag.color, borderColor: flag.color } : undefined}
+                    className={`btn w-full flex flex-col items-start gap-1 text-left ${active ? "text-beige-900" : ""}`}
+                    style={
+                      active
+                        ? { background: flag.color, borderColor: flag.color, color: "#f1dec5" }
+                        : undefined
+                    }
                     onClick={() => toggleFlag(flag.key)}
                   >
                     <span className="font-semibold text-base">{flag.icon} {flag.label}</span>
@@ -604,20 +616,20 @@ export default function VehicleFolderPage() {
 
               return (
                 <div key={note.id} className="card p-4" data-section="vehicle">
-                  <div className="text-sm text-white/80 mb-1">
+                  <div className="text-sm text-beige-900/80 mb-1">
                     {createdLabel} • {note.author || note.authorUid || ""}
                   </div>
-                  <div className="whitespace-pre-wrap mb-2 text-white/90">{note.text}</div>
+                  <div className="whitespace-pre-wrap mb-2 text-beige-900">{note.text}</div>
                   {note.paymentStatus && paymentMessage && (
-                    <div className="mb-2 text-sm font-semibold text-white">
+                    <div className="mb-2 text-sm font-semibold text-beige-900">
                       {paymentMessage}
                       {amountLabel && (
-                        <span className="font-normal text-white/80"> {" "}• {note.paymentLabel || "Kwota"}: {amountLabel}</span>
+                        <span className="font-normal text-beige-900/80"> {" "}• {note.paymentLabel || "Kwota"}: {amountLabel}</span>
                       )}
                     </div>
                   )}
                   {note.paymentStatus && note.paymentStatus !== "pending" && resolvedLabel && (
-                    <div className="mb-2 text-xs text-white/70">
+                    <div className="mb-2 text-xs text-beige-900/70">
                       Zaktualizowano {resolvedLabel} przez {note.paymentResolvedBy || note.paymentResolvedByUid || "—"}
                     </div>
                   )}
@@ -625,14 +637,14 @@ export default function VehicleFolderPage() {
                     {note.paymentStatus === "pending" && (
                       <>
                         <button
-                          className="btn bg-green-700 text-white"
+                          className="btn bg-beige-800 text-black"
                           onClick={() => handlePaymentStatus(note, "paid")}
                           disabled={paymentProcessingId === note.id}
                         >
                           {paymentProcessingId === note.id ? "Przetwarzanie..." : "Mandat/Grzywnę opłacono"}
                         </button>
                         <button
-                          className="btn bg-red-700 text-white"
+                          className="btn bg-red-900 text-white"
                           onClick={() => handlePaymentStatus(note, "unpaid")}
                           disabled={paymentProcessingId === note.id}
                         >
@@ -641,7 +653,7 @@ export default function VehicleFolderPage() {
                       </>
                     )}
                     <button className="btn" onClick={() => editNote(note.id, note.text)}>Edytuj</button>
-                    <button className="btn bg-red-700 text-white" onClick={() => removeNote(note.id)}>Usuń</button>
+                    <button className="btn bg-red-900 text-white" onClick={() => removeNote(note.id)}>Usuń</button>
                   </div>
                 </div>
                );
